@@ -16,8 +16,7 @@
 
 package org.eztarget.vidcheroo;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -31,28 +30,30 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VidcherooMediaFrame extends JFrame {
 	
-	private static final long serialVersionUID = 201408251015L;
+	private static final long serialVersionUID = 201408251912L;
 	
-	private static int FRAME_INITIAL_X		= 300;
-	private static int FRAME_INITIAL_Y		= 40;
-	private static int FRAME_INITIAL_WIDTH	= (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f);
-	private static int FRAME_INITIAL_HEIGHT = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f);
-	
-	private boolean isFullScreen = false;
-	
+	private int frameX		= 300;
+	private int frameY		= 40;
+	private int frameWidth	= (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f);
+	private int frameHeight = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f);
+		
 	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
 	
 	public VidcherooMediaFrame() {
 		System.out.println("Initialising Media Frame.");
 		
-		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_INITIAL_WIDTH, FRAME_INITIAL_HEIGHT);
+		setBounds(frameX, frameY, frameWidth, frameHeight);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Vidcheroo");
+		setResizable(true);
+		setUndecorated(true);
 		
 		loadVlcLibraries("/Applications/VLC.app/Contents/MacOS/lib");
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
     	mediaPlayerComponent.getMediaPlayer().setRepeat(true);
         setContentPane(mediaPlayerComponent);
+        
+        setVisible(true);
 	}
 	
 	public void playMediaFile(String mediaPath) {
@@ -79,15 +80,34 @@ public class VidcherooMediaFrame extends JFrame {
 		mediaPlayerComponent.getMediaPlayer().stop();
 	}
 
-	public void toggleFullScreen() {
-		GraphicsDevice graphicsDev;
-		graphicsDev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	/**
+	 * 
+	 * @param windowed
+	 */
+	public void setWindowed(boolean windowed) {
+		if (!windowed) {
+			// Store settings before resizing.
+			Rectangle windowBounds = getBounds();
+			frameX		= windowBounds.x;
+			frameY		= windowBounds.y;
+			frameWidth	= (int) windowBounds.getWidth();
+			frameHeight = (int) windowBounds.getHeight();
 
-	    if (graphicsDev.isFullScreenSupported()) {
-	    	setVisible(false);
-	        //Engine.mediaFrame.setUndecorated(true);
-	        graphicsDev.setFullScreenWindow(this);
-	        setVisible(true);
-	    }
+		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
+		    	// Resize the window, then mark it as full-screen.
+		    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
+		    	screenBounds.y -= 20;
+		    	screenBounds.height += 20;
+		    	setBounds(screenBounds);
+		    	//getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
+		  
+		        setResizable(false);
+		    } else {
+		    	setWindowed(true);
+		    }
+		} else {
+			setResizable(true);
+			setBounds(frameX, frameY, frameWidth, frameHeight);
+		}
 	}
 }

@@ -16,6 +16,10 @@
 
 package org.eztarget.vidcheroo;
 
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+
 import com.apple.eawt.FullScreenUtilities;
 
 public class Engine {
@@ -25,6 +29,7 @@ public class Engine {
 	private static VidcherooControlFrame controlFrame;
 	private static VidcherooMediaFrame mediaFrame;
 	
+	private static boolean isFullScreen = false;
 	private static VidcherooStatus status = VidcherooStatus.NOFILES;
 	private static float beatFraction = 1.0f;
 	private static int beatSleepLength = 500;
@@ -35,6 +40,17 @@ public class Engine {
 		if (FileCrawler.getInstance().getFileListLength() > 0) {
 			setStatus(VidcherooStatus.READY);
 		}
+		
+		// Add key event dispatcher.
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(
+				new KeyEventDispatcher()  { 
+					public boolean dispatchKeyEvent(KeyEvent e){
+						if(e.getID() == KeyEvent.KEY_PRESSED){
+							handleKeyPress(e.getKeyCode());
+						}
+						return false;
+					}
+				});
 	}
 
 	public static Engine getInstance() {
@@ -43,6 +59,23 @@ public class Engine {
 		}
 		return instance;
 	}
+	
+	/**
+	 * 
+	 * @param keyCode
+	 */
+	private void handleKeyPress(int keyCode) {
+		System.out.println("" + keyCode);
+		
+		switch (keyCode) {
+		case 27:	// ESC
+			if (isFullScreen) toggleFullScreen();
+			break;
+
+		default:
+			break;
+		}
+	} 
 
 	public void setControlFrame(VidcherooControlFrame controlFrame) {
 		Engine.controlFrame = controlFrame;
@@ -104,9 +137,13 @@ public class Engine {
 			setStatus(VidcherooStatus.READY);
 		}
 	}
-
+	
 	public void toggleFullScreen() {
-		Engine.mediaFrame.toggleFullScreen();
+		// Toggle boolean first.
+		isFullScreen = !isFullScreen;
+		
+		if (isFullScreen) mediaFrame.setWindowed(false);
+		else mediaFrame.setWindowed(true);
 	}
 	
 	private static final float MIN_TEMPO = 60.0f;
@@ -143,6 +180,7 @@ public class Engine {
 		Engine.sleepCounter = beatSleepLength;
 		mediaFrame.stop();
 	}
+	
 	/**
 	 *  60s / BPM * beat fraction
 	 */
@@ -164,5 +202,4 @@ public class Engine {
 			}
 		}
 	}
-
 }

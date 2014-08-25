@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 
 public class VidcherooControlFrame extends JFrame {
 	
-	private static final long serialVersionUID = 201408251015L;
+	private static final long serialVersionUID = 201408251912L;
 	
 	private static int FRAME_INITIAL_X	= 40;
 	private static int FRAME_INITIAL_Y	= 40;
@@ -199,17 +199,7 @@ public class VidcherooControlFrame extends JFrame {
 				);
 		bottomPanel.add(statusLabel);
 		
-//		JLabel l1 = new JLabel("*100");
-//		l1.setBounds(0, 100, 50, 20);
-//		contentPane.add(l1);
-//		
-//		JLabel l2 = new JLabel("*400");
-//		l2.setBounds(0, 400, 50, 20);
-//		contentPane.add(l2);
-//		
-//		JLabel l3 = new JLabel("*contentPane - 50");
-//		l3.setBounds(0, (int) (contentPane.getSize().getHeight()), 50, 50);
-//		contentPane.add(l3);
+		setVisible(true);
 	}
 	
 	ActionListener openMediaPathSelector = new ActionListener() {

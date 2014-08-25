@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class FileCrawler {
 
 	private static FileCrawler instance = null;
-	
+		
 	private ArrayList<String> filePathList = new ArrayList<String>();
 	//TODO: Read this value from stored settings.
 	private String mediaPath = "/Users/michel/Projekte/VidcherooOld/feed";
