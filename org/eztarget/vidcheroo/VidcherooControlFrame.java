@@ -44,6 +44,7 @@ public class VidcherooControlFrame extends JFrame {
 	private static String[] BEAT_LENGTHS = {"1/16", "1/8", "1/4", "1/2"};
 	
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
+	private JTextField tempoTextField;
 	
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
@@ -110,25 +111,26 @@ public class VidcherooControlFrame extends JFrame {
 		
 		// TEMPO Label:
 		JLabel tempoLabel = new JLabel("Tempo");
-		final int fTempoLabelWidth = 40;
+		//TODO: Calculate width of tempo label.
+		final int fTempoLabelWidth = ELEMENT_WIDTH_S / 2;
 		final int fTempoSectionRow1Y = fTopPanelHeight + MARGIN;
 		tempoLabel.setBounds(MARGIN, fTempoSectionRow1Y, fTempoLabelWidth, ELEMENT_HEIGHT);
 		contentPane.add(tempoLabel);
 		
 		// TEMPO Text Field:
-		final JTextField fTempoTextField = new JTextField();
-		fTempoTextField.addActionListener(new ActionListener() {
+		tempoTextField = new JTextField();
+		tempoTextField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().setTempo(fTempoTextField.getText());				
+				Engine.getInstance().setTempo(tempoTextField.getText());				
 			}
 		});
-		fTempoTextField.setBounds(
+		tempoTextField.setBounds(
 				MARGIN + fTempoLabelWidth,
 				fTempoSectionRow1Y,
 				FRAME_WIDTH - MARGIN - fTempoLabelWidth - MARGIN,
 				ELEMENT_HEIGHT);
-		contentPane.add(fTempoTextField);
-		fTempoTextField.setColumns(5);
+		contentPane.add(tempoTextField);
+		tempoTextField.setColumns(5);
 
 		/*
 		 * Beat Length Buttons
@@ -162,22 +164,23 @@ public class VidcherooControlFrame extends JFrame {
 		 * Bottom Panel
 		 */
 		
-		
 		JPanel bottomPanel = new JPanel();
-		int bottomPanelHeight = MARGIN + ELEMENT_HEIGHT + MARGIN + ELEMENT_HEIGHT + MARGIN + ELEMENT_HEIGHT;
+		int bottomPanelHeight = MARGIN + ELEMENT_HEIGHT + MARGIN + ELEMENT_HEIGHT + ELEMENT_HEIGHT;
+		//TODO: Figure out correct y value.
 		bottomPanel.setBounds(
 				0,
-				FRAME_HEIGHT - bottomPanelHeight,
+				FRAME_HEIGHT - bottomPanelHeight - 30,
 				FRAME_WIDTH,
 				bottomPanelHeight
 				);
+		//bottomPanel.setBackground(Color.BLUE);
 		contentPane.add(bottomPanel);
 		bottomPanel.setLayout(null);
 		
 		// FIND MEDIA FILES Button:
 		JButton mediaPathButton = new JButton("Select Media Path");
 		mediaPathButton.addActionListener(openMediaPathSelector);
-		mediaPathButton.setBounds(MARGIN,MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
 		bottomPanel.add(mediaPathButton);
 		
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
@@ -190,7 +193,7 @@ public class VidcherooControlFrame extends JFrame {
 		// STATUS Label:
 		statusLabel.setBounds(
 				MARGIN,
-				fBottomRow2Y + ELEMENT_HEIGHT + MARGIN,
+				fBottomRow2Y + ELEMENT_HEIGHT,
 				ELEMENT_WIDTH,
 				ELEMENT_HEIGHT
 				);
@@ -238,9 +241,11 @@ public class VidcherooControlFrame extends JFrame {
 		}
 	};
 
-	public void setStatus(VidcherooStatus status) {
-		switch(status) {
-		
-		}
+	public void setStatusText(String status) {
+		statusLabel.setText(status);
+	}
+	
+	public void setTempoText(float tempo) {
+		tempoTextField.setText(String.format("%g", tempo));
 	}
 }

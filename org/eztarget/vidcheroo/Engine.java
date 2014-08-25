@@ -24,7 +24,9 @@ public class Engine {
 	private static VidcherooMediaFrame mediaFrame;
 	
 	private static VidcherooStatus status = VidcherooStatus.NOFILES;
+	private static float beatFraction = 1.0f;
 	private static int beatTime = 500;
+	private static float tempo = 120f;
 	
 	protected Engine() {
 		FileCrawler.getInstance().loadFileList();
@@ -42,6 +44,7 @@ public class Engine {
 
 	public void setControlFrame(VidcherooControlFrame controlFrame) {
 		Engine.controlFrame = controlFrame;
+		Engine.controlFrame.setTempoText(tempo);
 	}
 
 	public void setMediaFrame(VidcherooMediaFrame mediaFrame) {
@@ -52,11 +55,11 @@ public class Engine {
 		if (status != VidcherooStatus.NOFILES) {
 			// Always go back into ready state before playing to finish old threads.
 			setStatus(VidcherooStatus.READY);
-			
+
 			Thread t = new Thread() {
 				public void run() {
 					System.out.println("Starting new Engine Play thread.");
-					setStatus(VidcherooStatus.PLAYING);
+					Engine.getInstance().setStatus(VidcherooStatus.PLAYING);
 
 					while (status == VidcherooStatus.PLAYING) {
 						// Play the next file.
@@ -72,7 +75,6 @@ public class Engine {
 					System.out.println("Reached end of Engine Play thread.");
 				}
 			};
-
 			t.start();
 		}
 	}
@@ -80,6 +82,7 @@ public class Engine {
 	public void pause() {
 		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
 			setStatus(VidcherooStatus.READY);
+			mediaFrame.pause();
 		}
 	}
 
@@ -87,37 +90,53 @@ public class Engine {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private static final float MIN_TEMPO = 60.0f;
+	private static final float MAX_TEMPO = 180.0f;
 
-	public void setTempo(String text) {
-//		double dTempo = 0.0;
-//		// Attempt to change the tempo.
-//		// If the input is a valid double set the new tempo.
-//		try {
-//			dTempo = Double.parseDouble(tempoTextField.getText());
-//		}
-//		// Otherwise don't try to change the tempo.
-//		catch(Exception ex) {}
-//		
-//		// Only replace the tempo if a valid BPM value was given.
-//		if(dTempo >= 60 && dTempo <= 180) {
-//			engine.setTempo(dTempo);
-//		}
-//		else {
-//			tempoTextField.setText(engine.getTempo() + "");
-//			engine.setStatusMessage("60.0 < Tempo < 180.0!");
-//		}		
+	public void setTempo(String tempoText) {
+		float newTempo = 0.0f;
+		
+		// Attempt to read a float value from the given string.
+		try {
+			newTempo = Float.parseFloat(tempoText);
+		} catch(Exception ex) {
+			System.err.println(ex.toString());
+		}
+		
+		// Only replace the tempo if a valid BPM value was given.
+		if(newTempo >= MIN_TEMPO && newTempo <= MAX_TEMPO) {
+			tempo = newTempo;
+		} else {
+			controlFrame.setStatusText(MIN_TEMPO + " < Tempo < " + MAX_TEMPO + "!");
+		}
+		controlFrame.setTempoText(tempo);
 	}
 
-	public void setBeatFraction(float f) {
-		// TODO Auto-generated method stub
-		
+	public void setBeatFraction(float newBeatFraction) {
+		Engine.beatFraction = newBeatFraction;
+		updateBeatTime();
+	}
+	
+	/**
+	 *  60s / BPM * beat fraction
+	 */
+	private void updateBeatTime() {
+		beatTime = (int) ((60.0f / (tempo * beatFraction)) * 1000.0f);
+		System.out.println("New switch time: " + beatTime);
 	}
 	
 	private void setStatus(VidcherooStatus newStatus) {
 		Engine.status = newStatus;
 		
 		if (controlFrame != null) {
-			controlFrame.setStatus(status);
+			if (status == VidcherooStatus.READY) {
+				controlFrame.setStatusText("Ready");
+			} else if (status == VidcherooStatus.PLAYING) {
+				controlFrame.setStatusText("Playing");
+			} else {
+				controlFrame.setStatusText("No media files found");
+			}
 		}
 	}
 

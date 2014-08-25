@@ -61,4 +61,9 @@ public class VidcherooMediaFrame extends JFrame {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), searchPath);
         Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 	}
+
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
 }
