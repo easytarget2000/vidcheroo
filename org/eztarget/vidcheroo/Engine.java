@@ -65,13 +65,17 @@ public class Engine {
 	 * @param keyCode
 	 */
 	private void handleKeyPress(int keyCode) {
-		System.out.println("" + keyCode);
+		System.out.println("Key pressed: " + keyCode);
 		
 		switch (keyCode) {
 		case 27:	// ESC
 			if (isFullScreen) toggleFullScreen();
 			break;
-
+		case 32:
+			play();
+			break;
+		case 49:
+			setBeatFraction(5);
 		default:
 			break;
 		}
@@ -96,6 +100,11 @@ public class Engine {
 	 * 
 	 */
 	public void play() {
+		
+		if (status == VidcherooStatus.NOFILES) {
+			System.err.println("ERROR: No media files ready to play.");
+			return;
+		}
 		
 		if (status == VidcherooStatus.PLAYING) {
 			Engine.sleepCounter = beatSleepLength;

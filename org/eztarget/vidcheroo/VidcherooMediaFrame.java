@@ -16,8 +16,14 @@
 
 package org.eztarget.vidcheroo;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
 
@@ -29,9 +35,10 @@ import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VidcherooMediaFrame extends JFrame {
-	
 	private static final long serialVersionUID = 201408251912L;
 	
+    private MotionPanel motionPanel;
+	    
 	private int frameX		= 300;
 	private int frameY		= 40;
 	private int frameWidth	= (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f);
@@ -46,27 +53,48 @@ public class VidcherooMediaFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Vidcheroo");
 		setResizable(true);
-		setUndecorated(true);
+		//setUndecorated(true);
 		
 		loadVlcLibraries("/Applications/VLC.app/Contents/MacOS/lib");
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
     	mediaPlayerComponent.getMediaPlayer().setRepeat(true);
         setContentPane(mediaPlayerComponent);
         
+        //TODO: Determine OS.
+        enableOSXFullscreen();
+    	
+//        motionPanel = new MotionPanel(this);
+//    	motionPanel.add(mediaPlayerComponent);
+//        motionPanel.setBounds(this.getBounds());
+//        add(motionPanel);
+        
         setVisible(true);
-	}
-	
-	public void playMediaFile(String mediaPath) {
-		//TODO: Figure out if using one instance for all methods or getMediaPlayer() for each is better.
-    	mediaPlayerComponent.getMediaPlayer().setVolume(0);
-    	//mediaPlayerComponent.getMediaPlayer().setFullScreen(true);
-    	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
 	}
 	
 	private void loadVlcLibraries(String searchPath) {
 		System.out.println("Searching for VLC libraries at " + searchPath);
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), searchPath);
         Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+	}
+	
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private void enableOSXFullscreen() {
+		try {
+			Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+			Class params[] = new Class[]{Window.class, Boolean.TYPE};
+			Method method = util.getMethod("setWindowCanFullScreen", params);
+			method.invoke(util, this, true);
+		}  catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void playMediaFile(String mediaPath) {
+		//TODO: Figure out if using one instance for all methods or getMediaPlayer() for each is better.
+		//TODO: Make use of getLength().
+		//TODO: Mute permanently.
+    	mediaPlayerComponent.getMediaPlayer().setVolume(0);
+    	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
 	}
 
 	public void pause() {
@@ -92,20 +120,23 @@ public class VidcherooMediaFrame extends JFrame {
 			frameY		= windowBounds.y;
 			frameWidth	= (int) windowBounds.getWidth();
 			frameHeight = (int) windowBounds.getHeight();
+	    	
+//	    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
+//	    	screenBounds.y -= 20;
+//	    	screenBounds.height += 20;
+//	    	setBounds(screenBounds);
 
-		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
-		    	// Resize the window, then mark it as full-screen.
-		    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
-		    	screenBounds.y -= 20;
-		    	screenBounds.height += 20;
-		    	setBounds(screenBounds);
-		    	//getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
-		  
-		        setResizable(false);
-		    } else {
-		    	setWindowed(true);
-		    }
+//		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
+//		    	// Resize the window, then mark it as full-screen.
+//
+//		    	getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
+//		    	dispose();
+//		    	setUndecorated(true);
+//		    } else {
+//		    	setWindowed(true);
+//		    }
 		} else {
+	    	getGraphicsConfiguration().getDevice().setFullScreenWindow(null);
 			setResizable(true);
 			setBounds(frameX, frameY, frameWidth, frameHeight);
 		}

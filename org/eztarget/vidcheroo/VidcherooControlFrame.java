@@ -39,9 +39,7 @@ public class VidcherooControlFrame extends JFrame {
 	private static int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
 	private static int ELEMENT_HEIGHT	= 26;
 	private static int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
-	
-	private static String[] BEAT_LENGTHS = {"1/16", "1/8", "1/4", "1/2"};
-	
+		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
 	
@@ -135,29 +133,25 @@ public class VidcherooControlFrame extends JFrame {
 		 * Beat Length Buttons
 		 */
 		
-		final int fBeatSectionRow1Y = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
+		int beatButtonY = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
 		
-		JButton beatButton1 = new JButton(BEAT_LENGTHS[0]);
-		beatButton1.setBounds(MARGIN, fBeatSectionRow1Y, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
-		beatButton1.addActionListener(beatFracChanged);
-		contentPane.add(beatButton1);
-		
-		JButton beatButton2 = new JButton(BEAT_LENGTHS[1]);
-		beatButton2.setBounds(ELEMENT_S_COL2_X, fBeatSectionRow1Y, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
-		beatButton2.addActionListener(beatFracChanged);
-		contentPane.add(beatButton2);
-		
-		final int fBeatSectionRow2Y = fBeatSectionRow1Y + (ELEMENT_HEIGHT * 2)  + MARGIN;
-		
-		JButton btnBeatFourth = new JButton(BEAT_LENGTHS[2]);
-		btnBeatFourth.setBounds(MARGIN, fBeatSectionRow2Y, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
-		btnBeatFourth.addActionListener(beatFracChanged);
-		contentPane.add(btnBeatFourth);
-		
-		JButton btnBeatHalf = new JButton(BEAT_LENGTHS[3]);
-		btnBeatHalf.setBounds(ELEMENT_S_COL2_X, fBeatSectionRow2Y, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
-		btnBeatHalf.addActionListener(beatFracChanged);
-		contentPane.add(btnBeatHalf);
+		for (int i = 0; i < BeatHandler.readableBeatLengths.length; i++) {
+			JButton beatButton = new JButton(BeatHandler.readableBeatLengths[i]);
+			
+			// Even buttons are left, uneven buttons are right.
+			int beatButtonX;
+			if (i % 2 == 0) beatButtonX = MARGIN;
+			else beatButtonX = ELEMENT_S_COL2_X;
+			
+			System.out.println(beatButtonX + " " + beatButtonY);
+			
+			beatButton.addActionListener(beatFracChanged);
+			beatButton.setBounds(beatButtonX, beatButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
+			contentPane.add(beatButton);
+			
+			// Move Y down if this is an uneven button.
+			if (i % 2 != 0) beatButtonY += (ELEMENT_HEIGHT * 2) + MARGIN;
+		}
 		
 		/*
 		 * Bottom Panel
@@ -230,15 +224,15 @@ public class VidcherooControlFrame extends JFrame {
 			String actionCommand = e.getActionCommand();
 			System.out.println("Changing beat length: " + actionCommand);
 			
-			if (actionCommand == BEAT_LENGTHS[0]) {
-				Engine.getInstance().setBeatFraction(4.0f);	// 1/16
-			} else if (actionCommand == BEAT_LENGTHS[1]) {
-				Engine.getInstance().setBeatFraction(2.0f); // 1/8
-			} else if (actionCommand == BEAT_LENGTHS[3]) {
-				Engine.getInstance().setBeatFraction(0.5f); // 1/2
+			if (actionCommand == BeatHandler.readableBeatLengths[0]) {
+				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[0]);	// 1/16
+			} else if (actionCommand == BeatHandler.readableBeatLengths[1]) {
+				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[1]); // 1/8
+			} else if (actionCommand == BeatHandler.readableBeatLengths[3]) {
+				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[3]); // 1/2
 			} else {
 				// Default is 1/4.
-				Engine.getInstance().setBeatFraction(1.0f);
+				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[2]);
 			}
 		}
 	};
