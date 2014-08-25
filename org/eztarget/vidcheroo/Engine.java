@@ -24,7 +24,8 @@ public class Engine {
 	private static VidcherooMediaFrame mediaFrame;
 	
 	private static VidcherooStatus status = VidcherooStatus.NOFILES;
-
+	private static int beatTime = 500;
+	
 	protected Engine() {
 		FileCrawler.getInstance().loadFileList();
 		if (FileCrawler.getInstance().getFileListLength() > 0) {
@@ -48,17 +49,38 @@ public class Engine {
 	}
 
 	public void play() {
-		System.out.println();
-		System.out.println("Playing...");
-		
-		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
-			mediaFrame.playMediaFile(FileCrawler.getInstance().getRandomMediaPath());
+		if (status != VidcherooStatus.NOFILES) {
+			// Always go back into ready state before playing to finish old threads.
+			setStatus(VidcherooStatus.READY);
+			
+			Thread t = new Thread() {
+				public void run() {
+					System.out.println("Starting new Engine Play thread.");
+					setStatus(VidcherooStatus.PLAYING);
+
+					while (status == VidcherooStatus.PLAYING) {
+						// Play the next file.
+						mediaFrame.playMediaFile(FileCrawler.getInstance().getRandomMediaPath());
+
+						// Sleep for one beat length.
+						try {
+							sleep(beatTime);
+						} catch (InterruptedException ex) {
+							System.err.println(ex.toString());
+						}
+					}
+					System.out.println("Reached end of Engine Play thread.");
+				}
+			};
+
+			t.start();
 		}
 	}
 
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
+			setStatus(VidcherooStatus.READY);
+		}
 	}
 
 	public void toggleFullscreen() {
