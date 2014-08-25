@@ -16,9 +16,16 @@
 
 package org.eztarget.vidcheroo;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class FileCrawler {
 
 	private static FileCrawler instance = null;
+	
+	private ArrayList<String> filePathList = new ArrayList<String>();
+	//TODO: Read this value from stored settings.
+	private String mediaPath = "/Users/michel/Projekte/VidcherooOld/feed";
 		
 	protected FileCrawler() {
 		
@@ -31,4 +38,41 @@ public class FileCrawler {
 		return instance;
 	}
 	
+	public void loadFileList() {
+		// Empty the ArrayList.
+		for(int i=0; i < filePathList.size(); i++) filePathList.remove(i);
+		
+		System.out.println("Looking for media files in " + mediaPath);
+		
+		if(mediaPath.length() > 1) {
+			File fileDirectory = new File(mediaPath);
+			
+			if (fileDirectory.length() > 0) {
+				for (final File fileEntry : fileDirectory.listFiles()) {
+					if (!fileEntry.isDirectory()) {
+						//TODO: Only load possible media files.
+						filePathList.add(mediaPath + "/" + fileEntry.getName());
+			            //System.out.println(fileEntry.getName());
+					}
+				}
+			}
+			
+			System.out.println("Number of found files: " + filePathList.size());
+		}
+	}
+	
+	public String getRandomMediaPath() {		
+		if(filePathList.size() > 0) {
+			int nextMediaIndex = (int) (Math.random() * filePathList.size());
+			return filePathList.get(nextMediaIndex);
+		} else {
+			//TODO: Return placeholder video file.
+			return "";
+		}
+	}
+	
+	public int getFileListLength() {
+		return filePathList.size();
+	}
 }
+

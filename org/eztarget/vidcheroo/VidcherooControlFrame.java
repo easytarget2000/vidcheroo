@@ -48,10 +48,10 @@ public class VidcherooControlFrame extends JFrame {
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
 		
-		setTitle("Vidcheroo Controller");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setTitle("Vidcheroo Controller");
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setBounds(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
@@ -206,6 +206,8 @@ public class VidcherooControlFrame extends JFrame {
 //			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 //			dirChooser.showSaveDialog(null);
 //			strDir = dirChooser.getSelectedFile().getAbsolutePath();
+//			
+//			if (e.getActionCommand() == "")
 //
 //			switch (e.getActionCommand()) {
 //			case ("Find Media Files"):
@@ -220,26 +222,25 @@ public class VidcherooControlFrame extends JFrame {
 	
 	ActionListener beatFracChanged = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-//			System.out.println("Changing speed.");
-//
-//			switch (e.getActionCommand()) {
-//			case "1/16":
-//				engine.setBeatFraction(4.0);
-//				break;
-//			case "1/8":
-//				engine.setBeatFraction(2.0);
-//				break;
-//			case "1/2":
-//				engine.setBeatFraction(0.5);
-//				break;
-//			default:
-//				engine.setBeatFraction(1.0);
-//				break;
-//			}
+			String actionCommand = e.getActionCommand();
+			System.out.println("Changing beat length: " + actionCommand);
+			
+			if (actionCommand == BEAT_LENGTHS[0]) {
+				Engine.getInstance().setBeatFraction(4.0f);	// 1/16
+			} else if (actionCommand == BEAT_LENGTHS[1]) {
+				Engine.getInstance().setBeatFraction(2.0f); // 1/8
+			} else if (actionCommand == BEAT_LENGTHS[3]) {
+				Engine.getInstance().setBeatFraction(0.5f); // 1/2
+			} else {
+				// Default is 1/4.
+				Engine.getInstance().setBeatFraction(1.0f);
+			}
 		}
 	};
 
-	public void setStatusText(String status) {
-		statusLabel.setText(status);
+	public void setStatus(VidcherooStatus status) {
+		switch(status) {
+		
+		}
 	}
 }

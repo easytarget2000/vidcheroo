@@ -22,9 +22,14 @@ public class Engine {
 	
 	private static VidcherooControlFrame controlFrame;
 	private static VidcherooMediaFrame mediaFrame;
+	
+	private static VidcherooStatus status = VidcherooStatus.NOFILES;
 
 	protected Engine() {
-
+		FileCrawler.getInstance().loadFileList();
+		if (FileCrawler.getInstance().getFileListLength() > 0) {
+			setStatus(VidcherooStatus.READY);
+		}
 	}
 
 	public static Engine getInstance() {
@@ -43,8 +48,12 @@ public class Engine {
 	}
 
 	public void play() {
-		// TODO Auto-generated method stub
+		System.out.println();
+		System.out.println("Playing...");
 		
+		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
+			mediaFrame.playMediaFile(FileCrawler.getInstance().getRandomMediaPath());
+		}
 	}
 
 	public void pause() {
@@ -75,6 +84,19 @@ public class Engine {
 //			tempoTextField.setText(engine.getTempo() + "");
 //			engine.setStatusMessage("60.0 < Tempo < 180.0!");
 //		}		
+	}
+
+	public void setBeatFraction(float f) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void setStatus(VidcherooStatus newStatus) {
+		Engine.status = newStatus;
+		
+		if (controlFrame != null) {
+			controlFrame.setStatus(status);
+		}
 	}
 
 }
