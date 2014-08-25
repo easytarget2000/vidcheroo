@@ -18,6 +18,15 @@ package org.eztarget.vidcheroo;
 
 import javax.swing.JFrame;
 
-public class VidcherooControlFrame extends JFrame {
+public class VidcherooMediaFrame extends JFrame {
 	
+	private static final long serialVersionUID = 201408251015L;
+	
+	public VidcherooMediaFrame() {
+		System.out.println("Initialising Media Frame.");
+		
+		setTitle("Vidcheroo");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
 }

@@ -18,4 +18,21 @@ package org.eztarget.vidcheroo;
 
 public class Launcher {
 	
+	public static void main(String[] args) {
+		// The GUI is running in its own thread.
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+	        	 System.out.println("Starting Vidcheroo GUI thread.");
+	        	 VidcherooControlFrame controlFrame = new VidcherooControlFrame();
+	        	 VidcherooMediaFrame mediaFrame = new VidcherooMediaFrame();
+	        	 
+	        	 controlFrame.setVisible(true);
+	        	 mediaFrame.setVisible(true);
+	     		
+	        	 Engine.getInstance().setControlFrame(controlFrame);
+	        	 Engine.getInstance().setMediaFrame(mediaFrame);
+	         }
+		});
+	}
+	
 }
