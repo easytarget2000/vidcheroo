@@ -16,6 +16,8 @@
 
 package org.eztarget.vidcheroo;
 
+import com.apple.eawt.FullScreenUtilities;
+
 public class Engine {
 
 	private static Engine instance = null;
@@ -25,7 +27,7 @@ public class Engine {
 	
 	private static VidcherooStatus status = VidcherooStatus.NOFILES;
 	private static float beatFraction = 1.0f;
-	private static int beatTime = 500;
+	private static int beatSleepLength = 500;
 	private static float tempo = 120f;
 	
 	protected Engine() {
@@ -49,12 +51,24 @@ public class Engine {
 
 	public void setMediaFrame(VidcherooMediaFrame mediaFrame) {
 		Engine.mediaFrame = mediaFrame;
+		FullScreenUtilities.setWindowCanFullScreen(Engine.mediaFrame,true);
 	}
+	
+	private static final int SLEEP_INTERVAL = 5;
+	private static int sleepCounter = 0;
+	
+	//private Thread t;
 
+	/**
+	 * 
+	 */
 	public void play() {
-		if (status != VidcherooStatus.NOFILES) {
-			// Always go back into ready state before playing to finish old threads.
-			setStatus(VidcherooStatus.READY);
+		
+		if (status == VidcherooStatus.PLAYING) {
+			Engine.sleepCounter = beatSleepLength;
+		}
+		
+		if (status == VidcherooStatus.READY) {
 
 			Thread t = new Thread() {
 				public void run() {
@@ -63,15 +77,19 @@ public class Engine {
 
 					while (status == VidcherooStatus.PLAYING) {
 						// Play the next file.
-						mediaFrame.playMediaFile(FileCrawler.getInstance().getRandomMediaPath());
+						Engine.mediaFrame.playMediaFile(FileCrawler.getInstance().getRandomMediaPath());
 
 						// Sleep for one beat length.
 						try {
-							sleep(beatTime);
+							for (Engine.sleepCounter = 0; Engine.sleepCounter < beatSleepLength; Engine.sleepCounter += SLEEP_INTERVAL) {
+								sleep(SLEEP_INTERVAL);
+							}
+							//sleep(beatSleepLength);
 						} catch (InterruptedException ex) {
 							System.err.println(ex.toString());
 						}
 					}
+					Engine.mediaFrame.pause();
 					System.out.println("Reached end of Engine Play thread.");
 				}
 			};
@@ -81,14 +99,14 @@ public class Engine {
 
 	public void pause() {
 		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
+			Engine.mediaFrame.pause();
+			Engine.sleepCounter = beatSleepLength;
 			setStatus(VidcherooStatus.READY);
-			mediaFrame.pause();
 		}
 	}
 
-	public void toggleFullscreen() {
-		// TODO Auto-generated method stub
-		
+	public void toggleFullScreen() {
+		Engine.mediaFrame.toggleFullScreen();
 	}
 	
 	private static final float MIN_TEMPO = 60.0f;
@@ -110,6 +128,7 @@ public class Engine {
 		} else {
 			controlFrame.setStatusText(MIN_TEMPO + " < Tempo < " + MAX_TEMPO + "!");
 		}
+		updateBeatTime();
 		controlFrame.setTempoText(tempo);
 	}
 
@@ -118,12 +137,18 @@ public class Engine {
 		updateBeatTime();
 	}
 	
+	public void shutdown() {
+		System.out.println("Exiting Vidcheroo");
+		status = VidcherooStatus.READY;
+		Engine.sleepCounter = beatSleepLength;
+		mediaFrame.stop();
+	}
 	/**
 	 *  60s / BPM * beat fraction
 	 */
 	private void updateBeatTime() {
-		beatTime = (int) ((60.0f / (tempo * beatFraction)) * 1000.0f);
-		System.out.println("New switch time: " + beatTime);
+		beatSleepLength = (int) ((60.0f / (tempo * beatFraction)) * 1000.0f);
+		System.out.println("New switch time: " + beatSleepLength);
 	}
 	
 	private void setStatus(VidcherooStatus newStatus) {

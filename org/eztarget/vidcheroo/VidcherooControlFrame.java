@@ -17,7 +17,6 @@
 package org.eztarget.vidcheroo;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -49,16 +48,16 @@ public class VidcherooControlFrame extends JFrame {
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
 		
-		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT);
+		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT + 20);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setLayout(null);
 		setTitle("Vidcheroo Controller");
 		
-		JPanel contentPane = new JPanel();
-		contentPane.setBounds(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
+		JPanel contentPane = (JPanel) getContentPane();
+		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());
+//		contentPane.setBounds(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
 		contentPane.setBackground(Color.WHITE);
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
 		/*
 		 * Top Panel:
@@ -100,7 +99,7 @@ public class VidcherooControlFrame extends JFrame {
 				ELEMENT_HEIGHT);
 		fullscreenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().toggleFullscreen();
+				Engine.getInstance().toggleFullScreen();
 			}
 		});
 		topPanel.add(fullscreenButton);
@@ -166,16 +165,17 @@ public class VidcherooControlFrame extends JFrame {
 		
 		JPanel bottomPanel = new JPanel();
 		int bottomPanelHeight = MARGIN + ELEMENT_HEIGHT + MARGIN + ELEMENT_HEIGHT + ELEMENT_HEIGHT;
+		//bottomPanelHeight = 150;
 		//TODO: Figure out correct y value.
 		bottomPanel.setBounds(
 				0,
-				FRAME_HEIGHT - bottomPanelHeight - 30,
+				FRAME_HEIGHT - bottomPanelHeight,
 				FRAME_WIDTH,
 				bottomPanelHeight
 				);
 		//bottomPanel.setBackground(Color.BLUE);
-		contentPane.add(bottomPanel);
 		bottomPanel.setLayout(null);
+		contentPane.add(bottomPanel);
 		
 		// FIND MEDIA FILES Button:
 		JButton mediaPathButton = new JButton("Select Media Path");
@@ -198,6 +198,18 @@ public class VidcherooControlFrame extends JFrame {
 				ELEMENT_HEIGHT
 				);
 		bottomPanel.add(statusLabel);
+		
+//		JLabel l1 = new JLabel("*100");
+//		l1.setBounds(0, 100, 50, 20);
+//		contentPane.add(l1);
+//		
+//		JLabel l2 = new JLabel("*400");
+//		l2.setBounds(0, 400, 50, 20);
+//		contentPane.add(l2);
+//		
+//		JLabel l3 = new JLabel("*contentPane - 50");
+//		l3.setBounds(0, (int) (contentPane.getSize().getHeight()), 50, 50);
+//		contentPane.add(l3);
 	}
 	
 	ActionListener openMediaPathSelector = new ActionListener() {

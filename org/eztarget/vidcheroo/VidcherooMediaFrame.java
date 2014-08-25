@@ -16,6 +16,8 @@
 
 package org.eztarget.vidcheroo;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -36,6 +38,8 @@ public class VidcherooMediaFrame extends JFrame {
 	private static int FRAME_INITIAL_WIDTH	= (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f);
 	private static int FRAME_INITIAL_HEIGHT = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f);
 	
+	private boolean isFullScreen = false;
+	
 	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
 	
 	public VidcherooMediaFrame() {
@@ -47,13 +51,15 @@ public class VidcherooMediaFrame extends JFrame {
 		
 		loadVlcLibraries("/Applications/VLC.app/Contents/MacOS/lib");
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+    	mediaPlayerComponent.getMediaPlayer().setRepeat(true);
         setContentPane(mediaPlayerComponent);
 	}
 	
 	public void playMediaFile(String mediaPath) {
 		//TODO: Figure out if using one instance for all methods or getMediaPlayer() for each is better.
-    	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
     	mediaPlayerComponent.getMediaPlayer().setVolume(0);
+    	//mediaPlayerComponent.getMediaPlayer().setFullScreen(true);
+    	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
 	}
 	
 	private void loadVlcLibraries(String searchPath) {
@@ -63,7 +69,25 @@ public class VidcherooMediaFrame extends JFrame {
 	}
 
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+		if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
+			System.out.println("Media frame pauses playback.");
+			mediaPlayerComponent.getMediaPlayer().pause();
+		}
+	}
+
+	public void stop() {
+		mediaPlayerComponent.getMediaPlayer().stop();
+	}
+
+	public void toggleFullScreen() {
+		GraphicsDevice graphicsDev;
+		graphicsDev = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
+	    if (graphicsDev.isFullScreenSupported()) {
+	    	setVisible(false);
+	        //Engine.mediaFrame.setUndecorated(true);
+	        graphicsDev.setFullScreenWindow(this);
+	        setVisible(true);
+	    }
 	}
 }
