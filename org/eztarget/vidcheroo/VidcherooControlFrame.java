@@ -39,6 +39,9 @@ public class VidcherooControlFrame extends JFrame {
 	private static int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
 	private static int ELEMENT_HEIGHT	= 26;
 	private static int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
+	
+	//TODO: Determine OS.
+	private static final boolean IS_OSX = true;
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
@@ -77,10 +80,17 @@ public class VidcherooControlFrame extends JFrame {
 		});
 		topPanel.add(playButton);
 		
+		final int fTopPanelRow2Y = MARGIN + (ELEMENT_HEIGHT * 2) + MARGIN;
+		
 		// PAUSE Button:
 		JButton pauseButton = new JButton("Pause");
-		final int fTopPanelRow2Y = MARGIN + (ELEMENT_HEIGHT * 2) + MARGIN;
-		pauseButton.setBounds(MARGIN, fTopPanelRow2Y, ELEMENT_WIDTH_S, ELEMENT_HEIGHT);
+		
+		// If a full-screen button is displayed, shorten the pause button.
+		int pauseButtonWidth;
+		if (IS_OSX) pauseButtonWidth = ELEMENT_WIDTH;
+		else pauseButtonWidth = ELEMENT_WIDTH_S;
+		
+		pauseButton.setBounds(MARGIN, fTopPanelRow2Y, pauseButtonWidth, ELEMENT_HEIGHT);
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Engine.getInstance().pause();
@@ -88,19 +98,21 @@ public class VidcherooControlFrame extends JFrame {
 		});
 		topPanel.add(pauseButton);
 		
-		// FULLSCREEN Button
-		JButton fullscreenButton = new JButton("Fullscreen");
-		fullscreenButton.setBounds(
-				ELEMENT_S_COL2_X,
-				fTopPanelRow2Y,
-				ELEMENT_WIDTH_S, 
-				ELEMENT_HEIGHT);
-		fullscreenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().toggleFullScreen();
-			}
-		});
-		topPanel.add(fullscreenButton);
+		if (!IS_OSX) {
+			// FULLSCREEN Button
+			JButton fullscreenButton = new JButton("Full Screen");
+			fullscreenButton.setBounds(
+					ELEMENT_S_COL2_X,
+					fTopPanelRow2Y,
+					ELEMENT_WIDTH_S, 
+					ELEMENT_HEIGHT);
+			fullscreenButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Engine.getInstance().toggleFullScreen();
+				}
+			});
+			topPanel.add(fullscreenButton);
+		}
 		
 		/*
 		 * Tempo Section
@@ -142,9 +154,7 @@ public class VidcherooControlFrame extends JFrame {
 			int beatButtonX;
 			if (i % 2 == 0) beatButtonX = MARGIN;
 			else beatButtonX = ELEMENT_S_COL2_X;
-			
-			System.out.println(beatButtonX + " " + beatButtonY);
-			
+						
 			beatButton.addActionListener(beatFracChanged);
 			beatButton.setBounds(beatButtonX, beatButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
 			contentPane.add(beatButton);

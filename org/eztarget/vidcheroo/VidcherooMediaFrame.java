@@ -16,13 +16,9 @@
 
 package org.eztarget.vidcheroo;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
@@ -32,21 +28,30 @@ import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VidcherooMediaFrame extends JFrame {
 	private static final long serialVersionUID = 201408251912L;
-	
-    private MotionPanel motionPanel;
-	    
+		    
 	private int frameX		= 300;
 	private int frameY		= 40;
-	private int frameWidth	= (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f);
-	private int frameHeight = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f);
+	private int frameWidth, frameHeight;
 		
 	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
+	//private EmbeddedMediaPlayer mediaPlayer;
 	
 	public VidcherooMediaFrame() {
+		this(
+				(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
+				(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f)
+				);
+	}
+	
+	public VidcherooMediaFrame(int width, int height) {
+		this.frameWidth = width;
+		this.frameHeight = height;
+		
 		System.out.println("Initialising Media Frame.");
 		
 		setBounds(frameX, frameY, frameWidth, frameHeight);
@@ -56,17 +61,28 @@ public class VidcherooMediaFrame extends JFrame {
 		//setUndecorated(true);
 		
 		loadVlcLibraries("/Applications/VLC.app/Contents/MacOS/lib");
+		
+//		// Set some options for libvlc
+//		String[] libvlcArgs = {"no-sout-display-audio"};
+//
+//		// Create a factory
+//		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(libvlcArgs);
+//		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
+//    	mediaPlayer.setRepeat(true);
+		
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-    	mediaPlayerComponent.getMediaPlayer().setRepeat(true);
+		mediaPlayerComponent.getMediaPlayer().setVolume(0);
         setContentPane(mediaPlayerComponent);
+    	
+//    	Canvas canvas = new Canvas();
+//    	canvas.setBounds(this.getBounds());
+//    	add(canvas);
+//    	CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+//    	mediaPlayer.setVideoSurface(videoSurface);
+//    	mediaPlayer.setVolume(0);
         
         //TODO: Determine OS.
         enableOSXFullscreen();
-    	
-//        motionPanel = new MotionPanel(this);
-//    	motionPanel.add(mediaPlayerComponent);
-//        motionPanel.setBounds(this.getBounds());
-//        add(motionPanel);
         
         setVisible(true);
 	}
@@ -89,12 +105,11 @@ public class VidcherooMediaFrame extends JFrame {
 		}
 	}
 	
-	public void playMediaFile(String mediaPath) {
-		//TODO: Figure out if using one instance for all methods or getMediaPlayer() for each is better.
+	public void playMediaFilePath(String mediaPath) {
 		//TODO: Make use of getLength().
 		//TODO: Mute permanently.
-    	mediaPlayerComponent.getMediaPlayer().setVolume(0);
     	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
+    	mediaPlayerComponent.getMediaPlayer().setVolume(0);
 	}
 
 	public void pause() {
@@ -140,5 +155,23 @@ public class VidcherooMediaFrame extends JFrame {
 			setResizable(true);
 			setBounds(frameX, frameY, frameWidth, frameHeight);
 		}
+	}
+
+	public void setMediaTime(long time) {
+		mediaPlayerComponent.getMediaPlayer().setTime(time);
+	}
+
+	public long getMediaLength(String mediaFilePath) {
+		MediaPlayer player = mediaPlayerComponent.getMediaPlayer();
+		player.playMedia(mediaFilePath);
+		player.parseMedia();
+		
+		long length = player.getLength();
+		player.stop();
+		
+		System.out.println(mediaFilePath + " length: " + length);
+		
+		if (length <= 0) return VidcherooMediaFile.LENGTH_INDETERMINABLE;
+		else return length;
 	}
 }
