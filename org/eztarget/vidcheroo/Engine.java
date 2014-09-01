@@ -37,7 +37,6 @@ public class Engine {
 			
 	protected Engine() {
 		System.out.println("Constructing Engine.");
-		VidcherooConfig.readConfigProperties();
 		
 		// Add key event dispatcher.
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(
@@ -50,6 +49,8 @@ public class Engine {
 					}
 				});
 		
+		// Refresh status on controller frame.
+		setStatus(status);
 	}
 
 	public static Engine getInstance() {
@@ -173,12 +174,12 @@ public class Engine {
 							long mediaLength = mediaFile.length;
 							if (mediaLength > fSkipMinLength) {
 								// Skip to a random point in the media that will not let it reach the end of the file.
-								startTime = (long) (Math.random() * (mediaLength - beatSleepLength - 10));
-								//System.out.println("Skipping to " + skipTime);
+								//startTime = (long) (Math.random() * (mediaLength - beatSleepLength - 10));
+								//System.out.println("Skipping to " + startTime);
 								//mediaFrame.setMediaTime(skipTime);
 							}
 						}
-						mediaFrame.playMediaFilePath(mediaFile.path, startTime);
+						mediaFrame.playMediaFilePath(mediaFile.path, startTime, false);
 
 						// Sleep for one beat length.
 						try {
@@ -265,14 +266,24 @@ public class Engine {
 	
 	public static void updateTempo() {
 		Engine.updateBeatTime();
-		controlFrame.setTempoText(VidcherooConfig.getTempo());
+		if (controlFrame != null) {
+			controlFrame.setTempoText(VidcherooConfig.getTempo());
+		}
 	}
 	
 	public static void shutdown() {
 		System.out.println("Exiting Vidcheroo");
 		status = VidcherooStatus.READY;
 		Engine.sleepCounter = beatSleepLength;
-		mediaFrame.stop();
+		try {
+			if (mediaFrame != null) {
+				mediaFrame.stop();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		VidcherooConfig.storeConfigProperties();		
 		
 		System.exit(0);
 	}

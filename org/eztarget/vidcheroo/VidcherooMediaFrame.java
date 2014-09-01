@@ -98,13 +98,11 @@ public class VidcherooMediaFrame extends JFrame {
 		}
 	}
 	
-	public void playMediaFilePath(String mediaPath, long startTime) {
-		//TODO: Make use of getLength().
+	public void playMediaFilePath(String mediaPath, long startTime, boolean repeat) {
 		//TODO: Mute permanently.
-    	//mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, ":start-time=" + startTime);
     	mediaPlayerComponent.getMediaPlayer().setVolume(0);
-    	//mediaPlayerComponent.getMediaPlayer().setRepeat(true);
+    	if (repeat) mediaPlayerComponent.getMediaPlayer().setRepeat(true);
 	}
 
 	public void pause() {

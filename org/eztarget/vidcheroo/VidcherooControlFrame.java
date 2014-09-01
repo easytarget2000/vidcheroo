@@ -25,6 +25,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -54,6 +55,7 @@ public class VidcherooControlFrame extends JFrame {
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
+	private JButton mediaPathButton, vlcPathButton;
 	
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
@@ -211,7 +213,7 @@ public class VidcherooControlFrame extends JFrame {
 		contentPane.add(bottomPanel);
 		
 		// FIND MEDIA FILES Button:
-		JButton mediaPathButton = new JButton("Select Media Path");
+		mediaPathButton = new JButton("Select Media Path");
 		mediaPathButton.addActionListener(openMediaPathSelector);
 		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
 		bottomPanel.add(mediaPathButton);
@@ -219,7 +221,8 @@ public class VidcherooControlFrame extends JFrame {
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
 		
 		// FIND VLC Button:
-		JButton vlcPathButton = new JButton("Select VLC Path");
+		vlcPathButton = new JButton("Select VLC Path");
+		vlcPathButton.addActionListener(openMediaPathSelector);
 		vlcPathButton.setBounds(MARGIN, fBottomRow2Y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
 		bottomPanel.add(vlcPathButton);
 				
@@ -237,24 +240,23 @@ public class VidcherooControlFrame extends JFrame {
 	
 	ActionListener openMediaPathSelector = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-//			// Initialise a JFileChooser acting as "directories only".
-//			JFileChooser dirChooser = new JFileChooser();
-//			String strDir;
-//			
-//			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//			dirChooser.showSaveDialog(null);
-//			strDir = dirChooser.getSelectedFile().getAbsolutePath();
-//			
-//			if (e.getActionCommand() == "")
-//
-//			switch (e.getActionCommand()) {
-//			case ("Find Media Files"):
-//				engine.loadFiles(strDir);
-//				break;
-//			default:
-//				engine.setVlcPath(strDir);
-//				break;
-//			}
+			// Initialise a JFileChooser acting as "directories only".
+			JFileChooser dirChooser = new JFileChooser();
+			String chosenDir;
+			
+			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			dirChooser.showSaveDialog(null);
+			chosenDir = dirChooser.getSelectedFile().getAbsolutePath();
+
+			System.out.println("Chosen Directory: " + chosenDir);
+			
+			if (e.getSource().equals(mediaPathButton)) {
+				VidcherooConfig.setMediaPath(chosenDir);
+			} else if (e.getSource().equals(vlcPathButton)){
+				VidcherooConfig.setVlcPath(chosenDir);
+			} else {
+				System.err.println("Unknown action event source: " + e.getSource());
+			}
 		}
 	};
 	

@@ -18,7 +18,6 @@ package org.eztarget.vidcheroo;
 
 public class Launcher {
 	
-	
 	public static void main(String[] args) {
 		String osNameProperty = System.getProperty("os.name");
 		System.out.println("OS Name: " + osNameProperty);
@@ -29,6 +28,8 @@ public class Launcher {
 			System.err.println("WARNING: OS unknown: " + osNameProperty);
 		}
 		
+		// Initialise the configuration.
+		VidcherooConfig.getInstance();
 		
 		// The GUI is running in its own thread.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -39,10 +40,9 @@ public class Launcher {
 
 				Engine.setControlFrame(controlFrame);
 				
-				// Initialise the Engine and in turn the config will be read.
+				// Initialise the Engine.
 				Engine.getInstance();
 	         }
 		});
 	}
-	
 }

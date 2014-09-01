@@ -16,9 +16,13 @@
 
 package org.eztarget.vidcheroo;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Properties;
 
 public class VidcherooConfig {
@@ -40,8 +44,20 @@ public class VidcherooConfig {
 	 */
 	
 	protected VidcherooConfig() {
+		restoreConfigProperties();
+		
 		// TODO: Read these values from settings or open file picker dialogue.
-		mediaPath = "/Users/michel/Projekte/VidcherooOld/feed";
+		if (mediaPath == null) {
+			URL url = Launcher.class.getResource("feed/");
+			if (url != null) {
+				mediaPath = url.getPath();
+			} else {
+				// TODO: Open picker dialog.
+			}
+		}
+		
+		System.out.println("Using feed path: " + mediaPath);
+		MediaFileParser.parseMediaPath(mediaPath);
 		
 		// TODO: Find VLC without help.
 		if (vlcPath == null) {
@@ -86,15 +102,6 @@ public class VidcherooConfig {
 		return tempo;
 	}
 	
-	public static String getVlcPath() {
-		return vlcPath;
-	}
-	
-	private static void setMediaPath(String mediaPath) {
-		VidcherooConfig.mediaPath = mediaPath;
-		MediaFileParser.parseMediaPath(mediaPath);
-	}
-	
 	private static final float MIN_TEMPO = 60.0f;
 	private static final float MAX_TEMPO = 180.0f;
 
@@ -118,28 +125,83 @@ public class VidcherooConfig {
 		Engine.updateTempo();
 	}
 	
+	public static String getVlcPath() {
+		return vlcPath;
+	}
+	
+	public static void setVlcPath(String vlcPath) {
+		//TODO: Check if this contains the libraries.
+		VidcherooConfig.vlcPath = vlcPath;
+	}
+	
+	public static void setMediaPath(String mediaPath) {
+		VidcherooConfig.mediaPath = mediaPath;
+		MediaFileParser.parseMediaPath(mediaPath);
+	}
+	
 	/*
 	 * Properties File
 	 */
 
-	private static final String CONFIG_PROPERTIES_FILE	= "config.properties";
+	//TODO: Test if getProtectionDomain() causes access problems.
+	private static final String CLASS_PATH = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+	
+	private static final String CONFIG_PROPERTIES_FILE	= CLASS_PATH + "config.properties";
 	private static final String CONFIG_KEY_MEDIA_PATH	= "media_path";
 	private static final String CONFIG_KEY_VLC_PATH		= "vlc_path";
 	private static final String CONFIG_KEY_TEMPO		= "tempo";
 
-	public static void readConfigProperties() {
-		System.out.println("Reading configuration.");
-		
-		vlcPath = VidcherooConfig.VLC_DEFAULT_PATH_OSX;
+	private static void restoreConfigProperties() {
+		System.out.println("Looking for configuration at " + CONFIG_PROPERTIES_FILE + ".");
+				
+		InputStream input = null;
+		 
+		try {
+			// Open an input stream from the predefined properties file.
+			input = new FileInputStream(CONFIG_PROPERTIES_FILE);
+
+			// Load the properties from the input file.
+			Properties prop = new Properties();
+			prop.load(input);
+	 
+			// Get the predefined properties values and apply them to the config attributes.
+			// VLC libs path:
+			String vlcPathProperty = prop.getProperty(CONFIG_KEY_VLC_PATH);
+			setVlcPath(vlcPathProperty);
+			// Media/feed path:
+			String mediaPathProperty = prop.getProperty(CONFIG_KEY_MEDIA_PATH);
+			setMediaPath(mediaPathProperty);
+			// Last set tempo:
+			String tempoProperty = prop.getProperty(CONFIG_KEY_TEMPO);
+			setTempo(tempoProperty);
+		} catch (FileNotFoundException fileEx) {
+			System.err.println("WARNING: Could not find configuration properties file.");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+					System.out.println("Closed " + CONFIG_PROPERTIES_FILE  + ".");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		// TODO: Read these values from settings or open file picker dialogue.
-		setMediaPath("/Users/michel/Projekte/VidcherooOld/feed");
+		//setMediaPath("/Users/michel/Projekte/VidcherooOld/feed");
 		
 		// TODO: Determine OS.
 		// TODO: Find VLC without help.
 	}
 	
-	private static void storeConfigProperties() {
+	public static void storeConfigProperties() {
+		if (mediaPath == null || vlcPath == null) {
+			System.err.println("ERROR: Missing attributes to store config properties.");
+			return;
+		}
+				
 		OutputStream output = null;
 		try {
 			output = new FileOutputStream(CONFIG_PROPERTIES_FILE);

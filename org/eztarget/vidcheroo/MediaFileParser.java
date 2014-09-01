@@ -49,6 +49,12 @@ public class MediaFileParser {
 	private static final int PARSE_FRAME_HEIGHT = 200;
 	
 	public static void parseMediaPath(final String fMediaPath) {
+		if (fMediaPath == null) {
+			System.err.println("ERROR: Media path to parse is null.");
+			Engine.setStatus(VidcherooStatus.NOFILES);
+			return;
+		}
+		
 		Engine.setStatus(VidcherooStatus.PARSING);
 		
 		Thread parseThread = new Thread() {
@@ -182,6 +188,7 @@ public class MediaFileParser {
 			if (input != null) {
 				try {
 					input.close();
+					System.out.println("Closed " + PROPERTY_FILE_NAME  + ".");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
