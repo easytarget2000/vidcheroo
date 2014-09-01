@@ -17,28 +17,37 @@
 package org.eztarget.vidcheroo;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import com.apple.eawt.Application;
 
 public class VidcherooControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
-	private static int FRAME_INITIAL_X	= 40;
-	private static int FRAME_INITIAL_Y	= 40;
-	private static int FRAME_WIDTH		= 240;
-	private static int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
-	private static int MARGIN			= 8;
-	private static int ELEMENT_WIDTH	= FRAME_WIDTH - (2 * MARGIN);
-	private static int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
-	private static int ELEMENT_HEIGHT	= 26;
-	private static int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
+	private static final String ICON_PATH = "org/eztarget/vidcheroo/resources/icon.png";
+	
+	private static final int FRAME_INITIAL_X	= 40;
+	private static final int FRAME_INITIAL_Y	= 40;
+	private static final int FRAME_WIDTH		= 240;
+	private static final int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
+	private static final int MARGIN			= 8;
+	private static final int ELEMENT_WIDTH	= FRAME_WIDTH - (2 * MARGIN);
+	private static final int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
+	private static final int ELEMENT_HEIGHT	= 26;
+	private static final int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
 	
 	//TODO: Determine OS.
 	private static final boolean IS_OSX = true;
@@ -50,10 +59,30 @@ public class VidcherooControlFrame extends JFrame {
 		System.out.println("Initialising Control Frame.");
 		
 		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT + 20);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent ev) {
+                new ExitDialog(null);
+            }
+        });
 		setResizable(false);
 		setLayout(null);
 		setTitle("Vidcheroo Controller");
+		
+		/*
+		 * Application Icon
+		 */
+		java.net.URL url = ClassLoader.getSystemResource(ICON_PATH);
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		Image image = kit.createImage(url);
+		Application application = Application.getApplication();
+		try {
+			application.setDockIconImage(image);
+		} catch (Exception e) {
+			Engine.setStatus(VidcherooStatus.NOVLC);
+			System.err.println("ERROR: Cannot load application icon.");
+			e.printStackTrace();
+		}
 		
 		JPanel contentPane = (JPanel) getContentPane();
 		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());
@@ -75,7 +104,7 @@ public class VidcherooControlFrame extends JFrame {
 		playButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT * 2);
 		playButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().play();
+				Engine.play();
 			}
 		});
 		topPanel.add(playButton);
@@ -93,7 +122,7 @@ public class VidcherooControlFrame extends JFrame {
 		pauseButton.setBounds(MARGIN, fTopPanelRow2Y, pauseButtonWidth, ELEMENT_HEIGHT);
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().pause();
+				Engine.pause();
 			}
 		});
 		topPanel.add(pauseButton);
@@ -108,7 +137,7 @@ public class VidcherooControlFrame extends JFrame {
 					ELEMENT_HEIGHT);
 			fullscreenButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Engine.getInstance().toggleFullScreen();
+					Engine.toggleFullScreen();
 				}
 			});
 			topPanel.add(fullscreenButton);
@@ -130,7 +159,7 @@ public class VidcherooControlFrame extends JFrame {
 		tempoTextField = new JTextField();
 		tempoTextField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Engine.getInstance().setTempo(tempoTextField.getText());				
+				VidcherooConfig.setTempo(tempoTextField.getText());				
 			}
 		});
 		tempoTextField.setBounds(
@@ -235,14 +264,14 @@ public class VidcherooControlFrame extends JFrame {
 			System.out.println("Changing beat length: " + actionCommand);
 			
 			if (actionCommand == BeatHandler.readableBeatLengths[0]) {
-				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[0]);	// 1/16
+				Engine.setBeatFraction(BeatHandler.tempoMultipliers[0]);	// 1/16
 			} else if (actionCommand == BeatHandler.readableBeatLengths[1]) {
-				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[1]); // 1/8
+				Engine.setBeatFraction(BeatHandler.tempoMultipliers[1]); // 1/8
 			} else if (actionCommand == BeatHandler.readableBeatLengths[3]) {
-				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[3]); // 1/2
+				Engine.setBeatFraction(BeatHandler.tempoMultipliers[3]); // 1/2
 			} else {
 				// Default is 1/4.
-				Engine.getInstance().setBeatFraction(BeatHandler.tempoMultipliers[2]);
+				Engine.setBeatFraction(BeatHandler.tempoMultipliers[2]);
 			}
 		}
 	};

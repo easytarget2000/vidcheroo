@@ -44,42 +44,28 @@ public class VidcherooMediaFrame extends JFrame {
 	public VidcherooMediaFrame() {
 		this(
 				(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
-				(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f)
+				(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f),
+				"Vidcheroo"
 				);
 	}
 	
-	public VidcherooMediaFrame(int width, int height) {
+	public VidcherooMediaFrame(int width, int height, String title) {
 		this.frameWidth = width;
 		this.frameHeight = height;
-		
+		setTitle(title);
+
 		System.out.println("Initialising Media Frame.");
 		
 		setBounds(frameX, frameY, frameWidth, frameHeight);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Vidcheroo");
 		setResizable(true);
 		//setUndecorated(true);
 		
-		loadVlcLibraries("/Applications/VLC.app/Contents/MacOS/lib");
-		
-//		// Set some options for libvlc
-//		String[] libvlcArgs = {"no-sout-display-audio"};
-//
-//		// Create a factory
-//		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(libvlcArgs);
-//		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
-//    	mediaPlayer.setRepeat(true);
+		loadVlcLibraries(VidcherooConfig.getVlcPath());
 		
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 		mediaPlayerComponent.getMediaPlayer().setVolume(0);
         setContentPane(mediaPlayerComponent);
-    	
-//    	Canvas canvas = new Canvas();
-//    	canvas.setBounds(this.getBounds());
-//    	add(canvas);
-//    	CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-//    	mediaPlayer.setVideoSurface(videoSurface);
-//    	mediaPlayer.setVolume(0);
         
         //TODO: Determine OS.
         enableOSXFullscreen();
@@ -90,7 +76,14 @@ public class VidcherooMediaFrame extends JFrame {
 	private void loadVlcLibraries(String searchPath) {
 		System.out.println("Searching for VLC libraries at " + searchPath);
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), searchPath);
-        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		try {
+	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		} catch (Exception ex) {
+			System.err.println("ERROR: Could not find VLC libraries.");
+			Engine.setStatus(VidcherooStatus.NOVLC);
+			ex.printStackTrace();
+		}
+        System.out.println("VLCDONE");
 	}
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -105,11 +98,13 @@ public class VidcherooMediaFrame extends JFrame {
 		}
 	}
 	
-	public void playMediaFilePath(String mediaPath) {
+	public void playMediaFilePath(String mediaPath, long startTime) {
 		//TODO: Make use of getLength().
 		//TODO: Mute permanently.
-    	mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
+    	//mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath);
+		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, ":start-time=" + startTime);
     	mediaPlayerComponent.getMediaPlayer().setVolume(0);
+    	//mediaPlayerComponent.getMediaPlayer().setRepeat(true);
 	}
 
 	public void pause() {

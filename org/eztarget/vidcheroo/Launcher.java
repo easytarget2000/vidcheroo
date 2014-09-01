@@ -18,16 +18,29 @@ package org.eztarget.vidcheroo;
 
 public class Launcher {
 	
+	
 	public static void main(String[] args) {
+		String osNameProperty = System.getProperty("os.name");
+		System.out.println("OS Name: " + osNameProperty);
+		if (osNameProperty.equals("Mac OS X")) {
+			Engine.setOs(SupportedOperatingSystems.OSX);
+		    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Vidcheroo");
+		} else {
+			System.err.println("WARNING: OS unknown: " + osNameProperty);
+		}
+		
+		
 		// The GUI is running in its own thread.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-	        	 System.out.println("Starting Vidcheroo GUI thread.");
-	        	 VidcherooControlFrame controlFrame = new VidcherooControlFrame();
-	        	 VidcherooMediaFrame mediaFrame = new VidcherooMediaFrame();
-	     		
-	        	 Engine.getInstance().setControlFrame(controlFrame);
-	        	 Engine.getInstance().setMediaFrame(mediaFrame);
+				
+				System.out.println("Starting Vidcheroo GUI.");
+				VidcherooControlFrame controlFrame = new VidcherooControlFrame();
+
+				Engine.setControlFrame(controlFrame);
+				
+				// Initialise the Engine and in turn the config will be read.
+				Engine.getInstance();
 	         }
 		});
 	}
