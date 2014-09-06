@@ -21,9 +21,12 @@ public class Launcher {
 	public static void main(String[] args) {
 		String osNameProperty = System.getProperty("os.name");
 		System.out.println("OS Name: " + osNameProperty);
-		if (osNameProperty.equals("Mac OS X")) {
+		if (osNameProperty.contains("Mac")) {
 			Engine.setOs(SupportedOperatingSystems.OSX);
 		    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Vidcheroo");
+		} else if (osNameProperty.contains("Windows")) {
+			Engine.setOs(SupportedOperatingSystems.WIN);
+			
 		} else {
 			System.err.println("WARNING: OS unknown: " + osNameProperty);
 		}
