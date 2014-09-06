@@ -19,11 +19,13 @@ package org.eztarget.vidcheroo;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.lang.reflect.Method;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -32,8 +34,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import com.apple.eawt.Application;
 
 public class VidcherooControlFrame extends JFrame {
 	
@@ -78,14 +78,22 @@ public class VidcherooControlFrame extends JFrame {
 		java.net.URL url = ClassLoader.getSystemResource(ICON_PATH);
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Image image = kit.createImage(url);
-		Application application = Application.getApplication();
-		try {
-			application.setDockIconImage(image);
-		} catch (Exception e) {
-			Engine.setStatus(VidcherooStatus.NOVLC);
-			System.err.println("ERROR: Cannot load application icon.");
-			e.printStackTrace();
+		if (Engine.getOs() == SupportedOperatingSystems.OSX) {
+			try {
+				Class<?> application = Class.forName("com.apple.eawt.Application");
+				Method getApplication;
+				getApplication = application.getMethod("getApplication", new Class[0]);
+				Object app = getApplication.invoke(null);
+				Method setDockImage = application.getMethod("setDockIconImage", Image.class);
+				setDockImage.invoke(app, image);
+				//Application application = Application.getApplication();
+				//application.setDockIconImage(image);
+			} catch (Exception e) {
+				System.err.println("ERROR: Cannot load application icon.");
+				e.printStackTrace();
+			}
 		}
+
 		
 		JPanel contentPane = (JPanel) getContentPane();
 		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());

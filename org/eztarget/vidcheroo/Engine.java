@@ -18,9 +18,11 @@ package org.eztarget.vidcheroo;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Method;
 
-import com.apple.eawt.FullScreenUtilities;
+//import com.apple.eawt.FullScreenUtilities;
 
 public class Engine {
 
@@ -86,7 +88,24 @@ public class Engine {
 
 	public static void setMediaFrame(VidcherooMediaFrame mediaFrame) {
 		Engine.mediaFrame = mediaFrame;
-		FullScreenUtilities.setWindowCanFullScreen(Engine.mediaFrame,true);
+		
+		// Enable OS-specific full-screen modes.
+		// To ensure platform independence, use reflection to get available classes after compilation.
+		if (os == SupportedOperatingSystems.OSX) {
+			
+			//FullScreenUtilities.setWindowCanFullScreen(Window arg0, boolean arg1);
+			try {
+				Class<?> fullScreenUtilities = Class.forName("com.apple.eawt.FullScreenUtilities");
+				Method setWindowCanFullScreen;
+				setWindowCanFullScreen = fullScreenUtilities.getMethod("setWindowCanFullScreen", Window.class, boolean.class);
+				//FullScreenUtilities.setWindowCanFullScreen(Engine.mediaFrame, true);
+				setWindowCanFullScreen.invoke(Engine.mediaFrame, true);
+			} catch (Exception e) {
+				System.err.println("WARNING: Problem enabling OSX full-screen mode.");
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	public static VidcherooStatus getStatus() {
