@@ -14,4 +14,7 @@ hs_err_pid*
 # Media Files #
 *.mp4 *.avi *.flv *.mp3 *.jpg *.mov *.3g
 
-bin/ IconWork/ feed/
+# Directories #
+bin/
+IconWork/
+feed/
