@@ -44,11 +44,11 @@ public class VidcherooControlFrame extends JFrame {
 	private static final int FRAME_INITIAL_Y	= 40;
 	private static final int FRAME_WIDTH		= 240;
 	private static final int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
-	private static final int MARGIN			= 8;
-	private static final int ELEMENT_WIDTH	= FRAME_WIDTH - (2 * MARGIN);
+	private static final int MARGIN				= 8;
+	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN);
 	private static final int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
-	private static final int ELEMENT_HEIGHT	= 26;
-	private static final int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
+	private static final int ELEMENT_HEIGHT		= 26;
+	private static final int ELEMENT_S_COL2_X 	= FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
 	
 	//TODO: Determine OS.
 	private static final boolean IS_OSX = true;

@@ -81,8 +81,8 @@ public class MediaFileParser {
 							}
 						}
 						
-						// If no properties file was found, run the analysis.
-						if (!isAnalysed) {
+						// If no properties file was found, but we have the VLC libs, run the analysis.
+						if (!isAnalysed && Engine.getStatus() != VidcherooStatus.NOVLC) {
 							// Create a small media frame that is used to shortly play the files, parse them and get their length.
 							VidcherooMediaFrame parseFrame;
 							parseFrame = new VidcherooMediaFrame(PARSE_FRAME_WIDTH, PARSE_FRAME_HEIGHT, "Vidcheroo Analyser");

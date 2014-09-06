@@ -26,7 +26,6 @@ public class Launcher {
 		    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Vidcheroo");
 		} else if (osNameProperty.contains("Windows")) {
 			Engine.setOs(SupportedOperatingSystems.WIN);
-			
 		} else {
 			System.err.println("WARNING: OS unknown: " + osNameProperty);
 		}

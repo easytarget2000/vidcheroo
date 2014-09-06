@@ -32,8 +32,8 @@ public class VidcherooConfig {
 	// TODO: Find further variations of this.
 	private static final String VLC_DEFAULT_PATH_LIN = "/usr/lib/vlc";
 	private static final String VLC_DEFAULT_PATH_OSX = "/Applications/VLC.app/Contents/MacOS/lib";
-	private static final String VLC_DEFAULT_PATH_W32 = "C:\\Program Files\\VLC\\lib\\";
-	private static final String VLC_DEFAULT_PATH_W64 = "C:\\Program Files(x86)\\VLC\\lib\\";
+	private static final String VLC_DEFAULT_PATH_W32 = "C:\\Program Files\\VideoLAN\\VLC\\";
+	private static final String VLC_DEFAULT_PATH_W64 = "C:\\Program Files(x86)\\VideoLAN\\VLC\\";
 	
 	private static String mediaPath;
 	private static String vlcPath;
