@@ -23,13 +23,8 @@ import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-
-import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VidcherooMediaFrame extends JFrame {
 	private static final long serialVersionUID = 201408251912L;
@@ -61,7 +56,10 @@ public class VidcherooMediaFrame extends JFrame {
 		setResizable(true);
 		//setUndecorated(true);
 		
-		loadVlcLibraries(VidcherooConfig.getVlcPath());
+		if (VidcherooConfig.getVlcPath() == null) {
+			System.err.println("ERROR: VLC path is not set.");
+			return;
+		}
 		
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 		mediaPlayerComponent.getMediaPlayer().setVolume(0);
@@ -71,21 +69,6 @@ public class VidcherooMediaFrame extends JFrame {
         enableOSXFullscreen();
         
         setVisible(true);
-	}
-	
-	private void loadVlcLibraries(String searchPath) {
-		System.out.println("Searching for VLC libraries at " + searchPath);
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), searchPath);
-		try {
-	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		} catch (UnsatisfiedLinkError unsatisfied) {
-			System.err.println("ERROR: Could not find VLC libraries.");
-			Engine.setStatus(VidcherooStatus.NOVLC);
-		} catch (Exception ex) {
-			Engine.setStatus(VidcherooStatus.NOVLC);
-			ex.printStackTrace();
-		}
-        System.out.println("VLCDONE");
 	}
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})

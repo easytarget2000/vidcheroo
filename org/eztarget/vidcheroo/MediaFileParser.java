@@ -49,13 +49,13 @@ public class MediaFileParser {
 	private static final int PARSE_FRAME_HEIGHT = 200;
 	
 	public static void parseMediaPath(final String fMediaPath) {
-		if (Engine.getStatus() == VidcherooStatus.NOVLC) {
+		if (Engine.hasFoundVlc() == false) {
 			return;
 		}
 		
 		if (fMediaPath == null) {
 			System.err.println("ERROR: Media path to parse is null.");
-			Engine.setStatus(VidcherooStatus.NOFILES);
+			Engine.setDidFindFeed(false);
 			return;
 		}
 		
@@ -82,7 +82,7 @@ public class MediaFileParser {
 						}
 						
 						// If no properties file was found, but we have the VLC libs, run the analysis.
-						if (!isAnalysed && Engine.getStatus() != VidcherooStatus.NOVLC) {
+						if (!isAnalysed && Engine.hasFoundVlc()) {
 							// Create a small media frame that is used to shortly play the files, parse them and get their length.
 							VidcherooMediaFrame parseFrame;
 							parseFrame = new VidcherooMediaFrame(PARSE_FRAME_WIDTH, PARSE_FRAME_HEIGHT, "Vidcheroo Analyser");
@@ -124,8 +124,14 @@ public class MediaFileParser {
 				
 				// Enable the Engine by setting the resulting status.
 				System.out.println("Number of found files: " + mediaFiles.size());
-				if (mediaFiles.size() > 1) Engine.setStatus(VidcherooStatus.READY);
-				else Engine.setStatus(VidcherooStatus.NOFILES);
+				if (mediaFiles.size() > 1) {
+					Engine.setDidFindFeed(true);
+					Engine.setStatus(VidcherooStatus.READY);
+				} else {
+					Engine.setDidFindFeed(false);
+					Engine.setStatus(VidcherooStatus.NOTREADY);
+				}
+				
 			}
 
 

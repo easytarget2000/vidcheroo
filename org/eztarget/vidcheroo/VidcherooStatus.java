@@ -17,5 +17,5 @@
 package org.eztarget.vidcheroo;
 
 public enum VidcherooStatus {
-	NOVLC, NOFILES, PARSING, READY, PLAYING
+	NOTREADY, PARSING, READY, PLAYING
 }

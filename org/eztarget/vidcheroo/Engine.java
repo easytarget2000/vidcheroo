@@ -28,12 +28,16 @@ public class Engine {
 
 	private static Engine instance = null;
 	
+	// Initialise worst status, improve from there.
+	private static boolean didFindFeed		= false;
+	private static boolean didFindVlc		= false;
+	private static VidcherooStatus status 	= VidcherooStatus.NOTREADY;
+	
 	private static SupportedOperatingSystems os = SupportedOperatingSystems.UNK;
 	private static VidcherooControlFrame controlFrame;
 	private static VidcherooMediaFrame mediaFrame;
 	
 	private static boolean isFullScreen = false;
-	private static VidcherooStatus status = VidcherooStatus.NOFILES;
 	private static float beatFraction = 1.0f;
 	private static int beatSleepLength = 500;
 			
@@ -120,8 +124,20 @@ public class Engine {
 	public static void setStatus(VidcherooStatus newStatus) {
 		Engine.status = newStatus;
 		System.out.println("New Status: " + newStatus.toString());
+		updateStatus();
+	}
+	
+	private static void updateStatus() {
+		if (controlFrame == null) return;
 		
-		if (controlFrame != null) {
+		// Go through statuses from "worst to best".
+		if (!didFindVlc) {
+			controlFrame.setStatusText("VLC not found.");
+			controlFrame.setEnabled(true);
+		} else if (!didFindFeed) {
+			controlFrame.setStatusText("No media files found.");
+			controlFrame.setEnabled(true);
+		} else {
 			switch (Engine.status) {
 			case READY:
 				if (mediaFrame == null) mediaFrame = new VidcherooMediaFrame();
@@ -136,16 +152,8 @@ public class Engine {
 				controlFrame.setStatusText("Analysing files.");
 				controlFrame.setEnabled(false);
 				break;
-			case NOFILES:
-				controlFrame.setStatusText("No media files found.");
-				controlFrame.setEnabled(true);
-				break;
-			case NOVLC:
-				controlFrame.setStatusText("VLC not found.");
-				controlFrame.setEnabled(true);
-				break;
 			default:
-				controlFrame.setStatusText("Unknown error occured.");
+				controlFrame.setStatusText("Status unknown.");
 				controlFrame.setEnabled(false);
 				break;
 			}
@@ -168,7 +176,7 @@ public class Engine {
 	 * 
 	 */
 	public static void play() {
-		if (status == VidcherooStatus.NOFILES) {
+		if (!didFindFeed) {
 			System.err.println("ERROR: No media files ready to play.");
 			return;
 		}
@@ -352,6 +360,24 @@ public class Engine {
 			default:
 				break;
 		}
+	}
+
+	public static boolean hasFoundFeed() {
+		return didFindFeed;
+	}
+
+	public static void setDidFindFeed(boolean didFindFeed) {
+		Engine.didFindFeed = didFindFeed;
+		updateStatus();
+	}
+
+	public static boolean hasFoundVlc() {
+		return didFindVlc;
+	}
+
+	public static void setDidFindVlc(boolean didFindVlc) {
+		Engine.didFindVlc = didFindVlc;
+		updateStatus();
 	}
 
 }

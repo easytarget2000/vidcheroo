@@ -25,6 +25,12 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+
 public class VidcherooConfig {
 	
 	private static VidcherooConfig instance = null;
@@ -33,7 +39,7 @@ public class VidcherooConfig {
 	private static final String VLC_DEFAULT_PATH_LIN = "/usr/lib/vlc";
 	private static final String VLC_DEFAULT_PATH_OSX = "/Applications/VLC.app/Contents/MacOS/lib";
 	private static final String VLC_DEFAULT_PATH_W32 = "C:\\Program Files\\VideoLAN\\VLC\\";
-	private static final String VLC_DEFAULT_PATH_W64 = "C:\\Program Files(x86)\\VideoLAN\\VLC\\";
+	private static final String VLC_DEFAULT_PATH_W64 = "C:/Program Files(x86)/VideoLAN/VLC/";
 	
 	private static String mediaPath;
 	private static String vlcPath;
@@ -124,9 +130,26 @@ public class VidcherooConfig {
 		return vlcPath;
 	}
 	
-	public static void setVlcPath(String vlcPath) {
+	public static boolean setVlcPath(String vlcPath) {
 		//TODO: Check if this contains the libraries.
-		VidcherooConfig.vlcPath = vlcPath;
+		System.out.println("Searching for VLC libraries at " + vlcPath);
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+		try {
+	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+			VidcherooConfig.vlcPath = vlcPath;
+			Engine.setDidFindVlc(true);
+			return true;
+		} catch (UnsatisfiedLinkError unsatisfied) {
+			System.err.println("ERROR: Could not find VLC libraries.");
+			Engine.setDidFindVlc(false);
+			vlcPath = null;
+			return false;
+		} catch (Exception ex) {
+			Engine.setDidFindVlc(false);
+			ex.printStackTrace();
+			vlcPath = null;
+			return false;
+		}
 	}
 	
 	public static void setMediaPath(String mediaPath) {

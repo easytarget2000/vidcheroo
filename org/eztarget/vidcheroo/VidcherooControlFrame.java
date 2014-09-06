@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.lang.reflect.Method;
 
 import javax.swing.JButton;
@@ -249,24 +248,27 @@ public class VidcherooControlFrame extends JFrame {
 	ActionListener openMediaPathSelector = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			// Initialise a JFileChooser acting as "directories only".
-			JFileChooser dirChooser = new JFileChooser();
-			
-			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			dirChooser.showSaveDialog(null);
-			File chosenFile = dirChooser.getSelectedFile();
-			
-			String chosenDir;
-			if (chosenFile == null) return;
-			else chosenDir = dirChooser.getSelectedFile().getAbsolutePath();
+			String chosenDir = chooseDir();
+			if (chosenDir == null) return;
 			System.out.println("Chosen Directory: " + chosenDir);
 			
 			if (e.getSource().equals(mediaPathButton)) {
 				VidcherooConfig.setMediaPath(chosenDir);
 			} else if (e.getSource().equals(vlcPathButton)){
-				VidcherooConfig.setVlcPath(chosenDir);
+				boolean didSetVlcPath = VidcherooConfig.setVlcPath(chosenDir);
+				if (!didSetVlcPath) chooseDir();
 			} else {
 				System.err.println("Unknown action event source: " + e.getSource());
 			}
+		}
+		
+		private String chooseDir() {
+			JFileChooser dirChooser = new JFileChooser();
+			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			dirChooser.showSaveDialog(null);
+			
+			if (dirChooser.getSelectedFile() == null) return null;
+			else return dirChooser.getSelectedFile().getAbsolutePath();
 		}
 	};
 	
