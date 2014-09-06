@@ -65,8 +65,9 @@ public class VidcherooMediaFrame extends JFrame {
 		mediaPlayerComponent.getMediaPlayer().setVolume(0);
         setContentPane(mediaPlayerComponent);
         
-        //TODO: Determine OS.
-        enableOSXFullscreen();
+        if (Engine.getOs() == SupportedOperatingSystems.OSX) {
+            enableOSXFullscreen();
+		}
         
         setVisible(true);
 	}
