@@ -78,9 +78,6 @@ public class VidcherooConfig {
 				break;
 			}
 		}
-		
-		// TODO: Check if libs were found at VLC path.
-		// TODO: Open picker dialog.
 	}
 
 	public static VidcherooConfig getInstance() {

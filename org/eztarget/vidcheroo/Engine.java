@@ -89,6 +89,10 @@ public class Engine {
 		FullScreenUtilities.setWindowCanFullScreen(Engine.mediaFrame,true);
 	}
 	
+	public static VidcherooStatus getStatus() {
+		return status;
+	}
+	
 	/**
 	 * Changes the engine state and displays a message in the control frame.
 	 * 
@@ -330,4 +334,5 @@ public class Engine {
 				break;
 		}
 	}
+
 }

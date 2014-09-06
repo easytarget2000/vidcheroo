@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -242,12 +243,14 @@ public class VidcherooControlFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// Initialise a JFileChooser acting as "directories only".
 			JFileChooser dirChooser = new JFileChooser();
-			String chosenDir;
 			
 			dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			dirChooser.showSaveDialog(null);
-			chosenDir = dirChooser.getSelectedFile().getAbsolutePath();
-
+			File chosenFile = dirChooser.getSelectedFile();
+			
+			String chosenDir;
+			if (chosenFile == null) return;
+			else chosenDir = dirChooser.getSelectedFile().getAbsolutePath();
 			System.out.println("Chosen Directory: " + chosenDir);
 			
 			if (e.getSource().equals(mediaPathButton)) {
@@ -266,7 +269,7 @@ public class VidcherooControlFrame extends JFrame {
 			System.out.println("Changing beat length: " + actionCommand);
 			
 			if (actionCommand == BeatHandler.readableBeatLengths[0]) {
-				Engine.setBeatFraction(BeatHandler.tempoMultipliers[0]);	// 1/16
+				Engine.setBeatFraction(BeatHandler.tempoMultipliers[0]); // 1/16
 			} else if (actionCommand == BeatHandler.readableBeatLengths[1]) {
 				Engine.setBeatFraction(BeatHandler.tempoMultipliers[1]); // 1/8
 			} else if (actionCommand == BeatHandler.readableBeatLengths[3]) {

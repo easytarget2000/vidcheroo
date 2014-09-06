@@ -49,6 +49,10 @@ public class MediaFileParser {
 	private static final int PARSE_FRAME_HEIGHT = 200;
 	
 	public static void parseMediaPath(final String fMediaPath) {
+		if (Engine.getStatus() == VidcherooStatus.NOVLC) {
+			return;
+		}
+		
 		if (fMediaPath == null) {
 			System.err.println("ERROR: Media path to parse is null.");
 			Engine.setStatus(VidcherooStatus.NOFILES);

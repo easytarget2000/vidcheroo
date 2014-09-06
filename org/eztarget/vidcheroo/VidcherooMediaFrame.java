@@ -78,8 +78,10 @@ public class VidcherooMediaFrame extends JFrame {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), searchPath);
 		try {
 	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		} catch (Exception ex) {
+		} catch (UnsatisfiedLinkError unsatisfied) {
 			System.err.println("ERROR: Could not find VLC libraries.");
+			Engine.setStatus(VidcherooStatus.NOVLC);
+		} catch (Exception ex) {
 			Engine.setStatus(VidcherooStatus.NOVLC);
 			ex.printStackTrace();
 		}
