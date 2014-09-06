@@ -85,7 +85,8 @@ public class VidcherooMediaFrame extends JFrame {
 	
 	public void playMediaFilePath(String mediaPath, long startTime, boolean repeat) {
 		//TODO: Mute permanently.
-		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, ":start-time=" + startTime);
+		String vlcOptions = ":quiet :no-video-title-show :start-time=" + startTime;
+		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
     	mediaPlayerComponent.getMediaPlayer().setVolume(0);
     	if (repeat) mediaPlayerComponent.getMediaPlayer().setRepeat(true);
 	}

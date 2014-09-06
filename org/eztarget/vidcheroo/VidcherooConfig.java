@@ -52,36 +52,33 @@ public class VidcherooConfig {
 	protected VidcherooConfig() {
 		restoreConfigProperties();
 		
-		// TODO: Read these values from settings or open file picker dialogue.
-		if (mediaPath == null) {
-			URL url = Launcher.class.getResource("feed/");
-			if (url != null) {
-				mediaPath = url.getPath();
-			} else {
-				// TODO: Open picker dialog.
-			}
-		}
-		
-		System.out.println("Using feed path: " + mediaPath);
-		MediaFileParser.parseMediaPath(mediaPath);
-		
 		// TODO: Find VLC without help.
 		if (vlcPath == null) {
 			switch (Engine.getOs()) {
 			case LIN:
-				vlcPath = VLC_DEFAULT_PATH_LIN;
+				setVlcPath(VLC_DEFAULT_PATH_LIN);
 				break;
 			case OSX:
-				vlcPath = VLC_DEFAULT_PATH_OSX;
+				setVlcPath(VLC_DEFAULT_PATH_OSX);
 				break;
 			case WIN:
-				vlcPath = VLC_DEFAULT_PATH_W64;
+				setVlcPath(VLC_DEFAULT_PATH_W64);
 				// TODO: Try other directory on fail.
 				break;
 			default:
 				break;
 			}
 		}
+		
+		// TODO: Read these values from settings or open file picker dialogue.
+		if (mediaPath == null) {
+			URL url = Launcher.class.getResource("feed/");
+			if (url != null) {
+				mediaPath = url.getPath();
+			}
+		}
+		
+		System.out.println("Using feed path: " + mediaPath);
 	}
 
 	public static VidcherooConfig getInstance() {
@@ -91,71 +88,6 @@ public class VidcherooConfig {
 		return instance;
 	}
 	
-	/*
-	 * Public Getter/Setter Methods
-	 */
-	
-	public String getMediaPath() {
-		return mediaPath;
-	}
-	
-	public static float getTempo() {
-		return tempo;
-	}
-	
-	private static final float MIN_TEMPO = 60.0f;
-	private static final float MAX_TEMPO = 180.0f;
-
-	public static void setTempo(String tempoText) {
-		float newTempo = 0.0f;
-		
-		// Attempt to read a float value from the given string.
-		try {
-			newTempo = Float.parseFloat(tempoText);
-		} catch(Exception ex) {
-			System.err.println(ex.toString());
-		}
-		
-		// Only replace the tempo if a valid BPM value was given.
-		if(newTempo >= MIN_TEMPO && newTempo <= MAX_TEMPO) {
-			tempo = newTempo;
-		} else {
-			Engine.blinkStatusText(MIN_TEMPO + " < Tempo < " + MAX_TEMPO + "!");
-		}
-		
-		Engine.updateTempo();
-	}
-	
-	public static String getVlcPath() {
-		return vlcPath;
-	}
-	
-	public static boolean setVlcPath(String vlcPath) {
-		//TODO: Check if this contains the libraries.
-		System.out.println("Searching for VLC libraries at " + vlcPath);
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
-		try {
-	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-			VidcherooConfig.vlcPath = vlcPath;
-			Engine.setDidFindVlc(true);
-			return true;
-		} catch (UnsatisfiedLinkError unsatisfied) {
-			System.err.println("ERROR: Could not find VLC libraries.");
-			Engine.setDidFindVlc(false);
-			vlcPath = null;
-			return false;
-		} catch (Exception ex) {
-			Engine.setDidFindVlc(false);
-			ex.printStackTrace();
-			vlcPath = null;
-			return false;
-		}
-	}
-	
-	public static void setMediaPath(String mediaPath) {
-		VidcherooConfig.mediaPath = mediaPath;
-		MediaFileParser.parseMediaPath(mediaPath);
-	}
 	
 	/*
 	 * Properties File
@@ -170,7 +102,7 @@ public class VidcherooConfig {
 	private static final String CONFIG_KEY_TEMPO		= "tempo";
 
 	private static void restoreConfigProperties() {
-		System.out.println("Looking for configuration at " + CONFIG_PROPERTIES_FILE + ".");
+		System.out.println("Searching for configuration at " + CONFIG_PROPERTIES_FILE + ".");
 				
 		InputStream input = null;
 		 
@@ -242,6 +174,76 @@ public class VidcherooConfig {
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		System.out.println("Stored configuration.");
+	}
+	
+	/*
+	 * Public Getter/Setter Methods
+	 */
+	
+	public static String getMediaPath() {
+		return mediaPath;
+	}
+	
+	public static void setMediaPath(String mediaPath) {
+		VidcherooConfig.mediaPath = mediaPath;
+		if (vlcPath != null) MediaFileParser.parseMediaPath(mediaPath);
+	}
+	
+	public static float getTempo() {
+		return tempo;
+	}
+	
+	private static final float MIN_TEMPO = 60.0f;
+	private static final float MAX_TEMPO = 180.0f;
+
+	public static void setTempo(String tempoText) {
+		System.out.println("Attempting to set tempo " + tempoText + ".");
+		float newTempo = 0.0f;
+		
+		// Attempt to read a float value from the given string.
+		try {
+			newTempo = Float.parseFloat(tempoText);
+		} catch(Exception ex) {
+			System.err.println(ex.toString());
+		}
+		
+		// Only replace the tempo if a valid BPM value was given.
+		if(newTempo >= MIN_TEMPO && newTempo <= MAX_TEMPO) {
+			tempo = newTempo;
+		} else {
+			Engine.blinkStatusText(MIN_TEMPO + " < Tempo < " + MAX_TEMPO + "!");
+		}
+		
+		Engine.updateTempo();
+	}
+	
+	public static String getVlcPath() {
+		return vlcPath;
+	}
+	
+	public static boolean setVlcPath(String vlcPath) {
+		//TODO: Check if this contains the libraries.
+		System.out.println("Searching for VLC libraries at " + vlcPath);
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+		try {
+	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+			VidcherooConfig.vlcPath = vlcPath;
+			Engine.setDidFindVlc(true);
+			System.out.println("Found VLC libraries.");
+			return true;
+		} catch (UnsatisfiedLinkError unsatisfied) {
+			System.err.println("ERROR: Could not find VLC libraries.");
+			Engine.setDidFindVlc(false);
+			vlcPath = null;
+			return false;
+		} catch (Exception ex) {
+			Engine.setDidFindVlc(false);
+			ex.printStackTrace();
+			vlcPath = null;
+			return false;
 		}
 	}
 	

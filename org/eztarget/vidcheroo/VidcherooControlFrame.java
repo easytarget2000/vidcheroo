@@ -221,7 +221,7 @@ public class VidcherooControlFrame extends JFrame {
 		
 		// FIND MEDIA FILES Button:
 		mediaPathButton = new JButton("Select Media Path");
-		mediaPathButton.addActionListener(openMediaPathSelector);
+		mediaPathButton.addActionListener(openPathListener);
 		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
 		bottomPanel.add(mediaPathButton);
 		
@@ -229,7 +229,7 @@ public class VidcherooControlFrame extends JFrame {
 		
 		// FIND VLC Button:
 		vlcPathButton = new JButton("Select VLC Path");
-		vlcPathButton.addActionListener(openMediaPathSelector);
+		vlcPathButton.addActionListener(openPathListener);
 		vlcPathButton.setBounds(MARGIN, fBottomRow2Y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
 		bottomPanel.add(vlcPathButton);
 				
@@ -245,7 +245,7 @@ public class VidcherooControlFrame extends JFrame {
 		setVisible(true);
 	}
 	
-	ActionListener openMediaPathSelector = new ActionListener() {
+	ActionListener openPathListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			// Initialise a JFileChooser acting as "directories only".
 			String chosenDir = chooseDir();
@@ -277,16 +277,20 @@ public class VidcherooControlFrame extends JFrame {
 			String actionCommand = e.getActionCommand();
 			System.out.println("Changing beat length: " + actionCommand);
 			
-			if (actionCommand == BeatHandler.readableBeatLengths[0]) {
-				Engine.setBeatFraction(BeatHandler.tempoMultipliers[0]); // 1/16
-			} else if (actionCommand == BeatHandler.readableBeatLengths[1]) {
-				Engine.setBeatFraction(BeatHandler.tempoMultipliers[1]); // 1/8
-			} else if (actionCommand == BeatHandler.readableBeatLengths[3]) {
-				Engine.setBeatFraction(BeatHandler.tempoMultipliers[3]); // 1/2
-			} else {
+			boolean selectionIsValid = false;
+			
+			for (int i = 0; i < BeatHandler.readableBeatLengths.length; i++) {
+				if (actionCommand == BeatHandler.readableBeatLengths[i]) {
+					Engine.setBeatFraction(BeatHandler.tempoMultipliers[i]);
+					selectionIsValid = true;
+				}
+			}
+			
+			if (!selectionIsValid) {
 				// Default is 1/4.
 				Engine.setBeatFraction(BeatHandler.tempoMultipliers[2]);
 			}
+			
 		}
 	};
 

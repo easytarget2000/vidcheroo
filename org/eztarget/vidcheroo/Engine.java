@@ -55,6 +55,8 @@ public class Engine {
 					}
 				});
 		
+		//MediaFileParser.parseMediaPath(VidcherooConfig.getMediaPath());
+		
 		// Refresh status on controller frame.
 		setStatus(status);
 	}
@@ -342,19 +344,19 @@ public class Engine {
 			case 32:
 				play();
 				break;
-			case 49:
+			case 81:
 				setBeatFraction(BeatHandler.tempoMultipliers[0]);
 				break;
-			case 50:
+			case 87:
 				setBeatFraction(BeatHandler.tempoMultipliers[1]);
 				break;
-			case 51:
+			case 69:
 				setBeatFraction(BeatHandler.tempoMultipliers[2]);
 				break;
-			case 52:
+			case 82:
 				setBeatFraction(BeatHandler.tempoMultipliers[3]);
 				break;
-			case 53:
+			case 84:
 				setBeatFraction(BeatHandler.tempoMultipliers[4 ]);
 				break;
 			default:
