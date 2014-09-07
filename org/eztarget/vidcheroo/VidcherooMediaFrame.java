@@ -16,6 +16,7 @@
 
 package org.eztarget.vidcheroo;
 
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -68,6 +69,14 @@ public class VidcherooMediaFrame extends JFrame {
         if (Engine.getOs() == SupportedOperatingSystems.OSX) {
             enableOSXFullscreen();
 		}
+        
+		/*
+		 * Application Icon
+		 */
+		java.net.URL url = ClassLoader.getSystemResource(Launcher.ICON_PATH);
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		Image image = kit.createImage(url);
+		setIconImage(image);
         
         setVisible(true);
 	}

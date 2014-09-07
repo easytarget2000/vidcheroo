@@ -37,20 +37,21 @@ public class VidcherooControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
-	private static final String ICON_PATH = "org/eztarget/vidcheroo/resources/icon.png";
 	
 	private static final int FRAME_INITIAL_X	= 40;
 	private static final int FRAME_INITIAL_Y	= 40;
 	private static final int FRAME_WIDTH		= 240;
 	private static final int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
 	private static final int MARGIN				= 8;
-	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN);
-	private static final int ELEMENT_WIDTH_S	= ELEMENT_WIDTH / 2;
+	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN) - 5;
+	private static final int ELEMENT_WIDTH_S	= (int) (ELEMENT_WIDTH * 0.49);
 	private static final int ELEMENT_HEIGHT		= 26;
 	private static final int ELEMENT_S_COL2_X 	= FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
 	
-	//TODO: Determine OS.
-	private static final boolean IS_OSX = true;
+	private static final boolean APPLY_DESIGN	= Engine.getOs() != SupportedOperatingSystems.OSX;
+	private static final Color COLOR_1			= new Color(246, 127, 1);
+	private static final Color COLOR_2			= Color.WHITE;
+	private static final Color COLOR_3			= new Color(255, 147, 21);
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
@@ -58,6 +59,7 @@ public class VidcherooControlFrame extends JFrame {
 	
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
+		System.out.println("Applying colours: " + APPLY_DESIGN);
 		
 		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT + 20);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -73,7 +75,8 @@ public class VidcherooControlFrame extends JFrame {
 		/*
 		 * Application Icon
 		 */
-		java.net.URL url = ClassLoader.getSystemResource(ICON_PATH);
+		
+		java.net.URL url = ClassLoader.getSystemResource(Launcher.ICON_PATH);
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Image image = kit.createImage(url);
 		setIconImage(image);
@@ -97,7 +100,7 @@ public class VidcherooControlFrame extends JFrame {
 		JPanel contentPane = (JPanel) getContentPane();
 		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());
 //		contentPane.setBounds(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(COLOR_2);
 		
 		/*
 		 * Top Panel:
@@ -106,9 +109,10 @@ public class VidcherooControlFrame extends JFrame {
 		JPanel topPanel = new JPanel();
 		final int fTopPanelHeight = MARGIN + (2 * ELEMENT_HEIGHT) + MARGIN + ELEMENT_HEIGHT + MARGIN;
 		topPanel.setBounds(0, 0, FRAME_WIDTH, fTopPanelHeight);
-		contentPane.add(topPanel);
 		topPanel.setLayout(null);
-		
+		if (APPLY_DESIGN) topPanel.setBackground(COLOR_1);
+		contentPane.add(topPanel);
+
 		// PLAY Button:
 		JButton playButton = new JButton("Play");
 		playButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT * 2);
@@ -117,17 +121,23 @@ public class VidcherooControlFrame extends JFrame {
 				Engine.play();
 			}
 		});
+		if (APPLY_DESIGN) {
+			playButton.setForeground(COLOR_1);
+			playButton.setBackground(COLOR_2);
+			playButton.setBorderPainted(false);
+		}
 		topPanel.add(playButton);
 		
 		final int fTopPanelRow2Y = MARGIN + (ELEMENT_HEIGHT * 2) + MARGIN;
+		final boolean fShowFullscrnBtn = Engine.getOs() != SupportedOperatingSystems.OSX;
 		
 		// PAUSE Button:
 		JButton pauseButton = new JButton("Pause");
 		
 		// If a full-screen button is displayed, shorten the pause button.
 		int pauseButtonWidth;
-		if (IS_OSX) pauseButtonWidth = ELEMENT_WIDTH;
-		else pauseButtonWidth = ELEMENT_WIDTH_S;
+		if (fShowFullscrnBtn) pauseButtonWidth = ELEMENT_WIDTH_S;
+		else pauseButtonWidth = ELEMENT_WIDTH;
 		
 		pauseButton.setBounds(MARGIN, fTopPanelRow2Y, pauseButtonWidth, ELEMENT_HEIGHT);
 		pauseButton.addActionListener(new ActionListener() {
@@ -135,11 +145,16 @@ public class VidcherooControlFrame extends JFrame {
 				Engine.pause();
 			}
 		});
+		if (APPLY_DESIGN) {
+			pauseButton.setForeground(COLOR_2);
+			pauseButton.setBackground(COLOR_1);
+			pauseButton.setBorderPainted(false);
+		}
 		topPanel.add(pauseButton);
 		
-		if (!IS_OSX) {
+		if (fShowFullscrnBtn) {
 			// FULLSCREEN Button
-			JButton fullscreenButton = new JButton("Full Screen");
+			JButton fullscreenButton = new JButton("Fullscreen");
 			fullscreenButton.setBounds(
 					ELEMENT_S_COL2_X,
 					fTopPanelRow2Y,
@@ -150,6 +165,11 @@ public class VidcherooControlFrame extends JFrame {
 					Engine.toggleFullScreen();
 				}
 			});
+			if (APPLY_DESIGN) {
+				fullscreenButton.setForeground(COLOR_2);
+				fullscreenButton.setBackground(COLOR_1);
+				fullscreenButton.setBorderPainted(false);
+			}
 			topPanel.add(fullscreenButton);
 		}
 		
@@ -163,6 +183,7 @@ public class VidcherooControlFrame extends JFrame {
 		final int fTempoLabelWidth = ELEMENT_WIDTH_S / 2;
 		final int fTempoSectionRow1Y = fTopPanelHeight + MARGIN;
 		tempoLabel.setBounds(MARGIN, fTempoSectionRow1Y, fTempoLabelWidth, ELEMENT_HEIGHT);
+		if (APPLY_DESIGN) tempoLabel.setForeground(COLOR_1);
 		contentPane.add(tempoLabel);
 		
 		// TEMPO Text Field:
@@ -177,8 +198,13 @@ public class VidcherooControlFrame extends JFrame {
 				fTempoSectionRow1Y,
 				FRAME_WIDTH - MARGIN - fTempoLabelWidth - MARGIN,
 				ELEMENT_HEIGHT);
-		contentPane.add(tempoTextField);
 		tempoTextField.setColumns(5);
+		if (APPLY_DESIGN) {
+			tempoTextField.setForeground(COLOR_1);
+			tempoTextField.setBackground(COLOR_2);
+			tempoTextField.setBorder(null);
+		}
+		contentPane.add(tempoTextField);
 
 		/*
 		 * Beat Length Buttons
@@ -196,6 +222,11 @@ public class VidcherooControlFrame extends JFrame {
 						
 			beatButton.addActionListener(beatFracChanged);
 			beatButton.setBounds(beatButtonX, beatButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
+			if (APPLY_DESIGN) {
+				beatButton.setForeground(COLOR_2);
+				beatButton.setBackground(COLOR_3);
+				beatButton.setBorderPainted(false);
+			}
 			contentPane.add(beatButton);
 			
 			// Move Y down if this is an uneven button.
@@ -212,18 +243,23 @@ public class VidcherooControlFrame extends JFrame {
 		//TODO: Figure out correct y value.
 		bottomPanel.setBounds(
 				0,
-				FRAME_HEIGHT - bottomPanelHeight,
+				FRAME_HEIGHT - bottomPanelHeight - 5,
 				FRAME_WIDTH,
 				bottomPanelHeight
 				);
-		//bottomPanel.setBackground(Color.BLUE);
 		bottomPanel.setLayout(null);
+		if (APPLY_DESIGN) bottomPanel.setBackground(COLOR_1);
 		contentPane.add(bottomPanel);
 		
 		// FIND MEDIA FILES Button:
 		mediaPathButton = new JButton("Select Media Path");
 		mediaPathButton.addActionListener(openPathListener);
 		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+		if (APPLY_DESIGN) {
+			mediaPathButton.setForeground(COLOR_2);
+			mediaPathButton.setBackground(COLOR_1);
+			mediaPathButton.setBorderPainted(false);
+		}
 		bottomPanel.add(mediaPathButton);
 		
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
@@ -232,6 +268,11 @@ public class VidcherooControlFrame extends JFrame {
 		vlcPathButton = new JButton("Select VLC Path");
 		vlcPathButton.addActionListener(openPathListener);
 		vlcPathButton.setBounds(MARGIN, fBottomRow2Y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+		if (APPLY_DESIGN) {
+			vlcPathButton.setForeground(COLOR_2);
+			vlcPathButton.setBackground(COLOR_1);
+			vlcPathButton.setBorderPainted(false);
+		}
 		bottomPanel.add(vlcPathButton);
 				
 		// STATUS Label:
@@ -241,6 +282,7 @@ public class VidcherooControlFrame extends JFrame {
 				ELEMENT_WIDTH,
 				ELEMENT_HEIGHT
 				);
+		if (APPLY_DESIGN) statusLabel.setForeground(COLOR_2);
 		bottomPanel.add(statusLabel);
 		
 		setVisible(true);
