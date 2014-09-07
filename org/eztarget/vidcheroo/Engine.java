@@ -257,11 +257,18 @@ public class Engine {
 	 * Not used on OSX.
 	 */
 	public static void toggleFullscreen() {
+		if (mediaFrame == null) return;
+		
+		pause();
+		mediaFrame.stop();
+		
 		// Toggle boolean first.
 		isFullScreen = !isFullScreen;
 		
 		if (isFullScreen) mediaFrame.setWindowed(false);
 		else mediaFrame.setWindowed(true);
+		
+		play();
 	}
 	
 	private static final int BLINK_TIME_SHOW = 600;

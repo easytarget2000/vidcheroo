@@ -119,7 +119,7 @@ public class VidcherooMediaFrame extends JFrame {
 	 */
 	public void setWindowed(boolean windowed) {
 		//setVisible(false);
-		//dispose();
+		dispose();
 		
 		setResizable(windowed);
 		try {
