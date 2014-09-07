@@ -44,6 +44,14 @@ public class Launcher {
 			System.err.println("WARNING: OS unknown: " + osNameProperty);
 		}
 		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// Initialise the configuration.
 		VidcherooConfig.getInstance();
 		

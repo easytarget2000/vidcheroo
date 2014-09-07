@@ -48,7 +48,8 @@ public class VidcherooControlFrame extends JFrame {
 	private static final int ELEMENT_HEIGHT		= 26;
 	private static final int ELEMENT_S_COL2_X 	= FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
 	
-	private static final boolean APPLY_DESIGN	= Engine.getOs() != SupportedOperatingSystems.OSX;
+	private static final boolean APPLY_DESIGN	= false;
+	//private static final boolean APPLY_DESIGN	= Engine.getOs() != SupportedOperatingSystems.OSX;
 	private static final Color COLOR_1			= new Color(246, 127, 1);
 	private static final Color COLOR_2			= Color.WHITE;
 	private static final Color COLOR_3			= new Color(255, 147, 21);
