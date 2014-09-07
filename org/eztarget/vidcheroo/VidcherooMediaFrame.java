@@ -94,12 +94,12 @@ public class VidcherooMediaFrame extends JFrame {
 		}
 	}
 	
-	public void playMediaFilePath(String mediaPath, long startTime, boolean repeat) {
-		//TODO: Mute permanently.
-		String vlcOptions = ":quiet :no-video-title-show :start-time=" + startTime;
+	//private static final String[] VLC_OPTIONS = {":quiet", ":no-audio", ":no-video-title-show", ":repeat"};
+	
+	public void playMediaFilePath(String mediaPath, float startTime) {
+		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":repeat", ":start-time=" + startTime};
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
-    	mediaPlayerComponent.getMediaPlayer().setVolume(0);
-    	if (repeat) mediaPlayerComponent.getMediaPlayer().setRepeat(true);
+		//mediaPlayerComponent.getMediaPlayer().skipPosition(startTime);
 	}
 
 	public void pause() {

@@ -21,6 +21,8 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
+import java.util.Random;
+import java.util.concurrent.locks.LockSupport;
 
 //import com.apple.eawt.FullScreenUtilities;
 
@@ -39,7 +41,7 @@ public class Engine {
 	
 	private static boolean isFullScreen = false;
 	private static float beatFraction = 1.0f;
-	private static int beatSleepLength = 500;
+	private static long beatSleepLength = 500l;
 	
 	/*
 	 * Single Initialisation
@@ -178,8 +180,9 @@ public class Engine {
 	 * Flow Control
 	 */
 	
-	private static final int SLEEP_INTERVAL = 5;
-	private static int sleepCounter = 0;
+	//TODO: Tweak these settings.
+	private static final long SLEEP_INTERVAL = 4l;
+	private static long sleepCounter = 0l;
 	
 	/**
 	 * 
@@ -196,33 +199,38 @@ public class Engine {
 					System.out.println("Starting new Engine Play thread.");
 					setStatus(VidcherooStatus.PLAYING);
 					
-					final int fSkipMinLength = beatSleepLength * 2;
-
+					// We will randomly skip through long videos.
+					Random rand = new Random();
+					
 					while (status == VidcherooStatus.PLAYING) {
 						// Play the next file.
 						VidcherooMediaFile mediaFile = MediaFileParser.getRandomMediaFile();
 						
-						long startTime = 0l;
+						float startTime = 0f;
+						float skipMinLength = beatSleepLength/1000f + 0.1f;
 						
 						// Only bother checking for a different start time, if we are not switching very fast.
-						if (beatSleepLength > 300) {	
-							long mediaLength = mediaFile.length;
-							if (mediaLength > fSkipMinLength) {
+						if (beatSleepLength > 1000) {	
+							float mediaLength = mediaFile.length / 1000.0f;
+							if (mediaLength > skipMinLength) {
 								// Skip to a random point in the media that will not let it reach the end of the file.
-								//startTime = (long) (Math.random() * (mediaLength - beatSleepLength - 10));
-								//System.out.println("Skipping to " + startTime);
-								//mediaFrame.setMediaTime(skipTime);
+								startTime = rand.nextFloat() * (mediaLength - skipMinLength);
+								System.out.println("Skipping to " + startTime + "/" + mediaLength);
 							}
 						}
-						mediaFrame.playMediaFilePath(mediaFile.path, startTime, false);
+						mediaFrame.playMediaFilePath(mediaFile.path, startTime);
+						
+						//TODO: Decide for sleep() or parkNanos().
+						final long fNanoInterval = SLEEP_INTERVAL * 1000000l;
 
 						// Sleep for one beat length.
 						try {
-							for (Engine.sleepCounter = 0; Engine.sleepCounter < beatSleepLength; Engine.sleepCounter += SLEEP_INTERVAL) {
-								sleep(SLEEP_INTERVAL);
+							for (Engine.sleepCounter = 0l; Engine.sleepCounter < beatSleepLength; Engine.sleepCounter += SLEEP_INTERVAL) {
+								//sleep(SLEEP_INTERVAL);
+								LockSupport.parkNanos(fNanoInterval);
 							}
 							//sleep(beatSleepLength);
-						} catch (InterruptedException ex) {
+						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
 					}

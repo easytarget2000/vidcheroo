@@ -17,6 +17,7 @@
 package org.eztarget.vidcheroo;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -37,7 +38,6 @@ public class VidcherooControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
-	// TODO: Figure out OS-dependent difference between frame and visible sizes.
 	private static final int FRAME_INITIAL_X	= 40;
 	private static final int FRAME_INITIAL_Y	= 40;
 	private static final int FRAME_WIDTH		= 240;
@@ -62,7 +62,9 @@ public class VidcherooControlFrame extends JFrame {
 		System.out.println("Initialising Control Frame.");
 		System.out.println("Applying design: " + APPLY_DESIGN);
 		
-		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH + 5, FRAME_HEIGHT + 20);
+		//setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH + 5, FRAME_HEIGHT + 20);
+		setLocation(FRAME_INITIAL_X, FRAME_INITIAL_Y);
+		//setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
@@ -98,11 +100,17 @@ public class VidcherooControlFrame extends JFrame {
 			}
 		}
 		
+		/*
+		 * Content Pane
+		 */
+		
 		JPanel contentPane = (JPanel) getContentPane();
 		contentPane.setBackground(COLOR_2);
+		contentPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		pack();
 		
 		/*
-		 * Top Panel:
+		 * Top Panel
 		 */
 		
 		JPanel topPanel = new JPanel();
@@ -110,7 +118,7 @@ public class VidcherooControlFrame extends JFrame {
 		topPanel.setBounds(0, 0, FRAME_WIDTH, fTopPanelHeight);
 		topPanel.setLayout(null);
 		if (APPLY_DESIGN) topPanel.setBackground(COLOR_1);
-		contentPane.add(topPanel);
+		getContentPane().add(topPanel);
 
 		// PLAY Button:
 		JButton playButton = new JButton("Play");
@@ -239,11 +247,9 @@ public class VidcherooControlFrame extends JFrame {
 		
 		JPanel bottomPanel = new JPanel();
 		int bottomPanelHeight = MARGIN + ELEMENT_HEIGHT + MARGIN + ELEMENT_HEIGHT + ELEMENT_HEIGHT;
-		//bottomPanelHeight = 150;
-		//TODO: Figure out correct y value.
 		bottomPanel.setBounds(
 				0,
-				FRAME_HEIGHT - bottomPanelHeight - 5,
+				FRAME_HEIGHT - bottomPanelHeight,
 				FRAME_WIDTH,
 				bottomPanelHeight
 				);
