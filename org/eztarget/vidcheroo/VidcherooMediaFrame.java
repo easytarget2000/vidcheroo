@@ -38,10 +38,10 @@ public class VidcherooMediaFrame extends JFrame {
 	
 	public VidcherooMediaFrame() {
 		this(
-				(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
-				(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f),
-				"Vidcheroo"
-				);
+			(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
+			(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f),
+			"Vidcheroo"
+			);
 	}
 	
 	public VidcherooMediaFrame(int width, int height, String title) {
@@ -147,7 +147,10 @@ public class VidcherooMediaFrame extends JFrame {
 		player.parseMedia();
 		
 		long length = player.getLength();
+		System.out.println(mediaFilePath + " t: " + player.getVideoTrack());
+
 		player.stop();
+		
 		
 		System.out.println(mediaFilePath + " length: " + length);
 		

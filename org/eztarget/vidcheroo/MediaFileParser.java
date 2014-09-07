@@ -47,6 +47,7 @@ public class MediaFileParser {
 	private static final boolean PARSE_FILES = true;
 	private static final int PARSE_FRAME_WIDTH = 300;
 	private static final int PARSE_FRAME_HEIGHT = 200;
+	//private static final String[] VALID_EXTENSIONS = {".mp4", ".avi", ".mov"
 	
 	public static void parseMediaPath(final String fMediaPath) {
 		if (Engine.hasFoundVlc() == false) {
@@ -96,13 +97,15 @@ public class MediaFileParser {
 							for (final File fileEntry : fileDirectory.listFiles()) {
 								// Right away ignore directories and files without name extensions.
 								if (!fileEntry.isDirectory()) {
-									String mediaFilePath = fMediaPath + "/" + fileEntry.getName();
+									String fileName = fileEntry.getName();
+									
+									String filePath = fMediaPath + "/" + fileName;
 									//TODO: Only load possible media files.
 									VidcherooMediaFile file = new VidcherooMediaFile();
-									file.path = mediaFilePath;
+									file.path = filePath;
 									
 									if (PARSE_FILES) {
-										file.length = parseFrame.getMediaLength(mediaFilePath);
+										file.length = parseFrame.getMediaLength(filePath);
 									} else {
 										file.length = VidcherooMediaFile.NOT_PARSED;
 									}

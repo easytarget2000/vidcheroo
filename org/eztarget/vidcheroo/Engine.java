@@ -57,6 +57,10 @@ public class Engine {
 		
 		//MediaFileParser.parseMediaPath(VidcherooConfig.getMediaPath());
 		
+		if (didFindFeed) {
+			
+		}
+		
 		// Refresh status on controller frame.
 		setStatus(status);
 	}

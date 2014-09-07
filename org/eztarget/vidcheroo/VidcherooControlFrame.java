@@ -76,6 +76,8 @@ public class VidcherooControlFrame extends JFrame {
 		java.net.URL url = ClassLoader.getSystemResource(ICON_PATH);
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Image image = kit.createImage(url);
+		setIconImage(image);
+
 		if (Engine.getOs() == SupportedOperatingSystems.OSX) {
 			try {
 				Class<?> application = Class.forName("com.apple.eawt.Application");
@@ -91,7 +93,6 @@ public class VidcherooControlFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
-
 		
 		JPanel contentPane = (JPanel) getContentPane();
 		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());

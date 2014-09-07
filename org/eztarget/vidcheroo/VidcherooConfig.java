@@ -95,7 +95,7 @@ public class VidcherooConfig {
 	//TODO: Test if getProtectionDomain() causes access problems.
 	private static final String CLASS_PATH = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	
-	private static final String CONFIG_PROPERTIES_FILE	= CLASS_PATH + "config.properties";
+	private static final String CONFIG_PROPERTIES_FILE	= CLASS_PATH + "properties.vch";
 	private static final String CONFIG_KEY_MEDIA_PATH	= "media_path";
 	private static final String CONFIG_KEY_VLC_PATH		= "vlc_path";
 	private static final String CONFIG_KEY_TEMPO		= "tempo";
@@ -150,6 +150,8 @@ public class VidcherooConfig {
 			System.err.println("ERROR: Missing attributes to store config properties.");
 			return;
 		}
+		
+		System.out.println("Storing configuration in " + CONFIG_PROPERTIES_FILE + ".");
 				
 		OutputStream output = null;
 		try {
@@ -163,6 +165,7 @@ public class VidcherooConfig {
 	 
 			// Save properties to project root folder.
 			prop.store(output, null);
+			System.out.println(prop.toString());
 		} catch (IOException io) {
 			io.printStackTrace();
 		} finally {
@@ -175,7 +178,6 @@ public class VidcherooConfig {
 			}
 		}
 		
-		System.out.println("Stored configuration.");
 	}
 	
 	/*
@@ -225,7 +227,7 @@ public class VidcherooConfig {
 	
 	public static boolean setVlcPath(String vlcPath) {
 		//TODO: Check if this contains the libraries.
-		System.out.println("Searching for VLC libraries at " + vlcPath);
+		System.out.println("Searching for VLC libraries at " + vlcPath + ".");
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
 		try {
 	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);

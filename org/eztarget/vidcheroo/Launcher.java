@@ -16,6 +16,9 @@
 
 package org.eztarget.vidcheroo;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 public class Launcher {
 	
 	public static void main(String[] args) {
@@ -24,6 +27,15 @@ public class Launcher {
 		if (osNameProperty.contains("Mac")) {
 			Engine.setOs(SupportedOperatingSystems.OSX);
 		    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Vidcheroo");
+		    System.setProperty("apple.laf.useScreenMenuBar", "true");
+		    System.setProperty("apple.laf.useScreenMenuBar", "true");
+		    try {
+		        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		    } 
+		    catch (ClassNotFoundException ex) {}
+		    catch (InstantiationException ex) {}
+		    catch (IllegalAccessException ex) {}
+		    catch (UnsupportedLookAndFeelException ex) {}
 		} else if (osNameProperty.contains("Windows")) {
 			Engine.setOs(SupportedOperatingSystems.WIN);
 		} else {
