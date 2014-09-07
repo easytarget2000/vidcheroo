@@ -16,6 +16,7 @@
 
 package org.eztarget.vidcheroo;
 
+import java.awt.IllegalComponentStateException;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -120,6 +121,13 @@ public class VidcherooMediaFrame extends JFrame {
 		//setVisible(false);
 		//dispose();
 		
+		setResizable(windowed);
+		try {
+			setUndecorated(!windowed);
+		} catch (IllegalComponentStateException e) {
+			System.out.println("Changing decorations exception occured.");
+		}
+		
 		if (!windowed) {
 			System.out.println("Leaving windowed mode.");
 			
@@ -132,7 +140,6 @@ public class VidcherooMediaFrame extends JFrame {
 	    	
 	    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
 	    	setBounds(screenBounds);
-	    	setResizable(false);
 
 //		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
 //		    	// Resize the window, then mark it as full-screen.
@@ -147,7 +154,6 @@ public class VidcherooMediaFrame extends JFrame {
 			System.out.println("Going into windowed mode.");
 			
 	    	getGraphicsConfiguration().getDevice().setFullScreenWindow(null);
-			setResizable(true);
 			setBounds(frameX, frameY, frameWidth, frameHeight);
 			//setUndecorated(false);
 		}
@@ -165,15 +171,16 @@ public class VidcherooMediaFrame extends JFrame {
 		player.playMedia(mediaFilePath);
 		player.parseMedia();
 		
-		long length = player.getLength();
-		System.out.println(mediaFilePath + " t: " + player.getVideoTrack());
-
+		long length = player.getMediaMeta().getLength();
+		if (length <= 0) {
+			System.err.println("WARNING: " + mediaFilePath + " is not a valid video file.");
+			length = VidcherooMediaFile.NOT_MEDIA_FILE;
+		} else {
+			System.out.println(mediaFilePath + " " + length);
+			//System.out.println(player.getAspectRatio() + " " + player.getAudioDelay());
+		}
+		
 		player.stop();
-		
-		
-		System.out.println(mediaFilePath + " length: " + length);
-		
-		if (length <= 0) return VidcherooMediaFile.LENGTH_INDETERMINABLE;
-		else return length;
+		return length;
 	}
 }

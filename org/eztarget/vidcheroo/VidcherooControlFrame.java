@@ -37,13 +37,13 @@ public class VidcherooControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
-	
+	// TODO: Figure out OS-dependent difference between frame and visible sizes.
 	private static final int FRAME_INITIAL_X	= 40;
 	private static final int FRAME_INITIAL_Y	= 40;
 	private static final int FRAME_WIDTH		= 240;
 	private static final int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
 	private static final int MARGIN				= 8;
-	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN) - 5;
+	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN);
 	private static final int ELEMENT_WIDTH_S	= (int) (ELEMENT_WIDTH * 0.49);
 	private static final int ELEMENT_HEIGHT		= 26;
 	private static final int ELEMENT_S_COL2_X 	= FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
@@ -62,7 +62,7 @@ public class VidcherooControlFrame extends JFrame {
 		System.out.println("Initialising Control Frame.");
 		System.out.println("Applying design: " + APPLY_DESIGN);
 		
-		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT + 20);
+		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH + 5, FRAME_HEIGHT + 20);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {

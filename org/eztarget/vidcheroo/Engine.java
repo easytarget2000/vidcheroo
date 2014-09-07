@@ -40,6 +40,10 @@ public class Engine {
 	private static boolean isFullScreen = false;
 	private static float beatFraction = 1.0f;
 	private static int beatSleepLength = 500;
+	
+	/*
+	 * Single Initialisation
+	 */
 			
 	protected Engine() {
 		System.out.println("Constructing Engine.");
@@ -76,19 +80,9 @@ public class Engine {
 	 * Public Getter/Setter Methods
 	 */
 	
-	public static SupportedOperatingSystems getOs() {
-		return os;
-	}
-	
-	/**
-	 * Let this instance of the application know the current OS,
-	 * only if it is currently unknown.
-	 * @param os	Operating system enumerator value
-	 */
-	public static void setOs(SupportedOperatingSystems os) {
-		if (Engine.os == SupportedOperatingSystems.UNK) {
-			Engine.os = os;
-		}
+	public static void setBeatFraction(float newBeatFraction) {
+		Engine.beatFraction = newBeatFraction;
+		updateBeatTime();
 	}
 
 	public static void setControlFrame(VidcherooControlFrame controlFrame) {
@@ -114,7 +108,6 @@ public class Engine {
 				System.err.println("WARNING: Problem enabling OSX full-screen mode.");
 				e.printStackTrace();
 			}
-			
 		}
 	}
 	
@@ -165,10 +158,20 @@ public class Engine {
 			}
 		}
 	}
-
-	public static void setBeatFraction(float newBeatFraction) {
-		Engine.beatFraction = newBeatFraction;
-		updateBeatTime();
+	
+	public static SupportedOperatingSystems getOs() {
+		return os;
+	}
+	
+	/**
+	 * Let this instance of the application know the current OS,
+	 * only if it is currently unknown.
+	 * @param os	Operating system enumerator value
+	 */
+	public static void setOs(SupportedOperatingSystems os) {
+		if (Engine.os == SupportedOperatingSystems.UNK) {
+			Engine.os = os;
+		}
 	}
 	
 	/*
@@ -182,11 +185,6 @@ public class Engine {
 	 * 
 	 */
 	public static void play() {
-		if (!didFindFeed) {
-			System.err.println("ERROR: No media files ready to play.");
-			return;
-		}
-		
 		if (status == VidcherooStatus.PLAYING) {
 			Engine.sleepCounter = beatSleepLength;
 		}
@@ -242,8 +240,8 @@ public class Engine {
 	 * Pause the player and finish the play thread by rising the sleep counter value.
 	 */
 	public static void pause() {
-		// Only if we are ready or playing, we can set the status to ready.
-		if (status == VidcherooStatus.READY || status == VidcherooStatus.PLAYING) {
+		// Only if we are playing, we can set the status to ready.
+		if (status == VidcherooStatus.PLAYING) {
 			Engine.mediaFrame.pause();
 			Engine.sleepCounter = beatSleepLength;
 			setStatus(VidcherooStatus.READY);

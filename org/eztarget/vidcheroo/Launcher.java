@@ -31,13 +31,6 @@ public class Launcher {
 		    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Vidcheroo");
 		    System.setProperty("apple.laf.useScreenMenuBar", "true");
 		    System.setProperty("apple.laf.useScreenMenuBar", "true");
-		    try {
-		        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		    } 
-		    catch (ClassNotFoundException ex) {}
-		    catch (InstantiationException ex) {}
-		    catch (IllegalAccessException ex) {}
-		    catch (UnsupportedLookAndFeelException ex) {}
 		} else if (osNameProperty.contains("Windows")) {
 			Engine.setOs(SupportedOperatingSystems.WIN);
 		} else {
@@ -48,7 +41,7 @@ public class Launcher {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
-			System.err.println("ERROR: Unspported L&F:"  + UIManager.getSystemLookAndFeelClassName());
+			System.err.println("ERROR: Unspported L&F:" + UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
