@@ -17,8 +17,7 @@ hs_err_pid*
 
 # Directories #
 bin/
-IconWork/*
+IconWork/
 feed/
 
-.IconWork/
-
+/IconWork/
