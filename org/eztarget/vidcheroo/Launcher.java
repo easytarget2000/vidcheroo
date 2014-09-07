@@ -44,11 +44,16 @@ public class Launcher {
 			System.err.println("WARNING: OS unknown: " + osNameProperty);
 		}
 		
+		// Set System L&F.
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
+		} catch (UnsupportedLookAndFeelException e) {
+			System.err.println("ERROR: Unspported L&F:"  + UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		
