@@ -117,7 +117,12 @@ public class VidcherooMediaFrame extends JFrame {
 	 * @param windowed
 	 */
 	public void setWindowed(boolean windowed) {
+		setVisible(false);
+		dispose();
+		
 		if (!windowed) {
+			System.out.println("Leaving windowed mode.");
+			
 			// Store settings before resizing.
 			Rectangle windowBounds = getBounds();
 			frameX		= windowBounds.x;
@@ -125,25 +130,28 @@ public class VidcherooMediaFrame extends JFrame {
 			frameWidth	= (int) windowBounds.getWidth();
 			frameHeight = (int) windowBounds.getHeight();
 	    	
-//	    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
-//	    	screenBounds.y -= 20;
-//	    	screenBounds.height += 20;
-//	    	setBounds(screenBounds);
+	    	Rectangle screenBounds = getGraphicsConfiguration().getBounds();
+	    	setBounds(screenBounds);
 
-//		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
-//		    	// Resize the window, then mark it as full-screen.
-//
-//		    	getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
-//		    	dispose();
-//		    	setUndecorated(true);
-//		    } else {
-//		    	setWindowed(true);
-//		    }
+		    if (getGraphicsConfiguration().getDevice().isFullScreenSupported()) {
+		    	// Resize the window, then mark it as full-screen.
+
+		    	getGraphicsConfiguration().getDevice().setFullScreenWindow(this);
+		    	setUndecorated(true);
+		    	
+		    } else {
+		    	setWindowed(true);
+		    }
 		} else {
+			System.out.println("Going into windowed mode.");
+			
 	    	getGraphicsConfiguration().getDevice().setFullScreenWindow(null);
 			setResizable(true);
 			setBounds(frameX, frameY, frameWidth, frameHeight);
+			setUndecorated(false);
 		}
+		pack();
+		setVisible(true);
 	}
 
 	public void setMediaTime(long time) {

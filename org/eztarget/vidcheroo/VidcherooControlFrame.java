@@ -59,7 +59,7 @@ public class VidcherooControlFrame extends JFrame {
 	
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
-		System.out.println("Applying colours: " + APPLY_DESIGN);
+		System.out.println("Applying design: " + APPLY_DESIGN);
 		
 		setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH, FRAME_HEIGHT + 20);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -98,8 +98,6 @@ public class VidcherooControlFrame extends JFrame {
 		}
 		
 		JPanel contentPane = (JPanel) getContentPane();
-		System.out.println("Controller content pane dimensions: " + contentPane.getBounds().toString());
-//		contentPane.setBounds(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
 		contentPane.setBackground(COLOR_2);
 		
 		/*
@@ -130,6 +128,7 @@ public class VidcherooControlFrame extends JFrame {
 		
 		final int fTopPanelRow2Y = MARGIN + (ELEMENT_HEIGHT * 2) + MARGIN;
 		final boolean fShowFullscrnBtn = Engine.getOs() != SupportedOperatingSystems.OSX;
+		//final boolean fShowFullscrnBtn = true;
 		
 		// PAUSE Button:
 		JButton pauseButton = new JButton("Pause");
@@ -162,7 +161,7 @@ public class VidcherooControlFrame extends JFrame {
 					ELEMENT_HEIGHT);
 			fullscreenButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Engine.toggleFullScreen();
+					Engine.toggleFullscreen();
 				}
 			});
 			if (APPLY_DESIGN) {

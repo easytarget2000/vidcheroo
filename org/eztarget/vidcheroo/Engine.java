@@ -258,7 +258,7 @@ public class Engine {
 	 * Toggles full screen boolean variable and calls resizing method on media frame.
 	 * Not used on OSX.
 	 */
-	public static void toggleFullScreen() {
+	public static void toggleFullscreen() {
 		// Toggle boolean first.
 		isFullScreen = !isFullScreen;
 		
@@ -343,7 +343,7 @@ public class Engine {
 		
 		switch (keyCode) {
 			case 27:	// ESC
-				if (isFullScreen) toggleFullScreen();
+				if (isFullScreen) toggleFullscreen();
 				break;
 			case 32:
 				play();
