@@ -49,7 +49,11 @@ public class Engine {
 	/*
 	 * Single Initialisation
 	 */
-			
+	
+	/**
+	 * Constructor
+	 * Starts the key event dispatcher.
+	 */
 	protected Engine() {
 		System.out.println("Constructing Engine.");
 		
@@ -64,16 +68,15 @@ public class Engine {
 					}
 				});
 		
-		//MediaFileParser.parseMediaPath(VidcherooConfig.getMediaPath());
-		
-		if (didFindFeed) {
-			
-		}
-		
 		// Refresh status on controller frame.
 		setStatus(status);
 	}
 
+	/**
+	 * Call back to constructor
+	 * 
+	 * @return Static singleton instance
+	 */
 	public static Engine getInstance() {
 		if (instance == null) {
 			instance = new Engine();
