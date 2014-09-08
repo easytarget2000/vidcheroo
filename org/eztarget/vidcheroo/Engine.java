@@ -66,7 +66,7 @@ public class Engine {
 	/**
 	 * Media frame that contains the VLC player.
 	 */
-	private static VidcherooMediaFrame mediaFrame;
+	private static MediaFrame mediaFrame;
 	
 	/**
 	 * The engine knows if the media frame is in full-screen mode,
@@ -204,7 +204,7 @@ public class Engine {
 	 * Prepares the media frame for the current operating system.
 	 * @param mediaFrame Media frame of this session
 	 */
-	public static void setMediaFrame(VidcherooMediaFrame mediaFrame) {
+	public static void setMediaFrame(MediaFrame mediaFrame) {
 		Engine.mediaFrame = mediaFrame;
 		
 		// Enable OS-specific full-screen modes.
@@ -241,7 +241,7 @@ public class Engine {
 	 */
 	public static void setControlFrame(ControlFrame controlFrame) {
 		Engine.controlFrame = controlFrame;
-		Engine.controlFrame.setTempoText(Config.getTempo());
+		Engine.controlFrame.setTempoText(ConfigurationHandler.getTempo());
 	}
 	
 	/**
@@ -278,7 +278,7 @@ public class Engine {
 		} else {
 			switch (Engine.status) {
 			case READY:
-				if (mediaFrame == null) mediaFrame = new VidcherooMediaFrame();
+				if (mediaFrame == null) mediaFrame = new MediaFrame();
 				controlFrame.setStatusText("Ready.");
 				controlFrame.setPlayControlEnabled(true);
 				controlFrame.setPathControlEnabled(true);
@@ -510,7 +510,7 @@ public class Engine {
 	public static void updateTempo() {
 		Engine.updateNoteTime();
 		if (controlFrame != null) {
-			controlFrame.setTempoText(Config.getTempo());
+			controlFrame.setTempoText(ConfigurationHandler.getTempo());
 		}
 	}
 	
@@ -529,7 +529,7 @@ public class Engine {
 			e.printStackTrace();
 		}
 		
-		Config.storeConfigProperties();		
+		ConfigurationHandler.storeConfigProperties();		
 		
 		System.exit(0);
 	}
@@ -540,7 +540,7 @@ public class Engine {
 	 * The value is multiplied with 1000 to get the millisecond value. 
 	 */
 	private static void updateNoteTime() {
-		float tempo = Config.getTempo();
+		float tempo = ConfigurationHandler.getTempo();
 		noteSleepLength = (int) ((60.0f / (tempo * tempoMultiplier)) * 1000.0f);
 		System.out.println("New switch time: " + noteSleepLength);
 	}

@@ -51,7 +51,7 @@ public class Launcher {
 		}
 		
 		// Initialise the configuration.
-		Config.getInstance();
+		ConfigurationHandler.getInstance();
 		
 		// The GUI is running in its own thread.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {

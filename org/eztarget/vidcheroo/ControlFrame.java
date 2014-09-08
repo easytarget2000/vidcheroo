@@ -205,7 +205,7 @@ public class ControlFrame extends JFrame {
 		tempoTextField = new JTextField();
 		tempoTextField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Config.setTempo(tempoTextField.getText());				
+				ConfigurationHandler.setTempo(tempoTextField.getText());				
 			}
 		});
 		tempoTextField.setBounds(
@@ -319,9 +319,9 @@ public class ControlFrame extends JFrame {
 			System.out.println("Chosen Directory: " + chosenDir);
 			
 			if (e.getSource().equals(mediaPathButton)) {
-				Config.setMediaPath(chosenDir);
+				ConfigurationHandler.setMediaPath(chosenDir);
 			} else if (e.getSource().equals(vlcPathButton)){
-				Config.setVlcPath(chosenDir);
+				ConfigurationHandler.setVlcPath(chosenDir);
 			} else {
 				System.err.println("Unknown action event source: " + e.getSource());
 			}

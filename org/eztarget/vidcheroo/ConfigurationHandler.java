@@ -31,24 +31,62 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-public class Config {
+/**
+ * Singleton class that stores, restores and presents configuration variables.
+ * 
+ * @author michel@easy-target.org
+ *
+ */
+public class ConfigurationHandler {
 	
-	private static Config instance = null;
+	/**
+	 * Singleton instance
+	 */
+	private static ConfigurationHandler instance = null;
 
-	// TODO: Find further variations of this.
+	// TODO: Find further variations of default paths.
+	
+	/**
+	 * Default path of VLC libraries in Linux distros
+	 */
 	private static final String VLC_DEFAULT_PATH_LIN = "/usr/lib/vlc";
+	
+	/**
+	 * Default path of VLC libraries in OSX.
+	 */
 	private static final String VLC_DEFAULT_PATH_OSX = "/Applications/VLC.app/Contents/MacOS/lib";
+	
+	/**
+	 * Default path of VLC libraries in Windows.
+	 * x64 VLC should be used and stored here on x64 Windows.
+	 */
 	private static final String VLC_DEFAULT_PATH_WIN = "C:\\Program Files\\VideoLAN\\VLC\\";
 	
+	/**
+	 * Absolute path to the directory that contains the media feed.
+	 */
 	private static String mediaPath;
+	
+	/**
+	 * Absolute path to the directory that contains the VLC libraries.
+	 */
 	private static String vlcPath;
+	
+	/**
+	 * The current musical tempo value, i.e. beats or quarter notes per minute.
+	 */
 	private static float tempo = 120f;
 	
 	/*
 	 * Singleton Constructor Methods
 	 */
 	
-	protected Config() {
+	/**
+	 * Constructor
+	 * Attempts to restore the configuration.
+	 * If this fails, it looks into default directories.
+	 */
+	protected ConfigurationHandler() {
 		restoreConfigProperties();
 		
 		// TODO: Find VLC without help.
@@ -80,9 +118,13 @@ public class Config {
 		System.out.println("Using feed path: " + mediaPath);
 	}
 
-	public static Config getInstance() {
+	/**
+	 * Call back to constructor
+	 * @return Static singleton instance
+	 */
+	public static ConfigurationHandler getInstance() {
 		if (instance == null) {
-			instance = new Config();
+			instance = new ConfigurationHandler();
 		}
 		return instance;
 	}
@@ -93,13 +135,36 @@ public class Config {
 	 */
 
 	//TODO: Test if getProtectionDomain() causes access problems.
-	private static final String CLASS_PATH = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	
-	private static final String CONFIG_PROPERTIES_FILE	= CLASS_PATH + "properties.vch";
-	private static final String CONFIG_KEY_MEDIA_PATH	= "media_path";
-	private static final String CONFIG_KEY_VLC_PATH		= "vlc_path";
-	private static final String CONFIG_KEY_TEMPO		= "tempo";
+	/**
+	 * The absolute path to the directory from which the Launcher has been started.
+	 */
+	private static String fClassPath = Launcher.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+	
+	/**
+	 * The absolute path to a possible file containing the configuration properties.
+	 */
+	private static final String CONFIG_PROPERTIES_FILE = fClassPath + "properties.vch";
+	
+	/**
+	 * Key of the media path attribute in the configuration properties file.
+	 */
+	private static final String CONFIG_KEY_MEDIA_PATH = "media_path";
+	
+	/**
+	 * Key of the VLC path attribute in the configuration properties file.
+	 */
+	private static final String CONFIG_KEY_VLC_PATH = "vlc_path";
+	
+	/**
+	 * Key of the tempo attribute in the configuration properties file.
+	 */
+	private static final String CONFIG_KEY_TEMPO = "tempo";
 
+	/**
+	 * Looks for the properties file in the directory that the application was launched for.
+	 * If the file was found, the properties are read and stored in the attributes.
+	 */
 	private static void restoreConfigProperties() {
 		System.out.println("Searching for configuration at " + CONFIG_PROPERTIES_FILE + ".");
 				
@@ -137,14 +202,12 @@ public class Config {
 				}
 			}
 		}
-		
-		// TODO: Read these values from settings or open file picker dialogue.
-		//setMediaPath("/Users/michel/Projekte/VidcherooOld/feed");
-		
-		// TODO: Determine OS.
-		// TODO: Find VLC without help.
 	}
 	
+	/**
+	 * Stores the current configuration attributes in a properties file
+	 * in the directory that this application was launched in.
+	 */
 	public static void storeConfigProperties() {
 		if (mediaPath == null || vlcPath == null) {
 			System.err.println("ERROR: Missing attributes to store config properties.");
@@ -184,22 +247,47 @@ public class Config {
 	 * Public Getter/Setter Methods
 	 */
 	
+	/**
+	 * @return Value of mediaPath attribute
+	 */
 	public static String getMediaPath() {
 		return mediaPath;
 	}
 	
+	/**
+	 * Changes the media path attribute and attempts to parse the files in the new directory.
+	 * @param mediaPath New media path value
+	 */
 	public static void setMediaPath(String mediaPath) {
-		Config.mediaPath = mediaPath;
+		ConfigurationHandler.mediaPath = mediaPath;
 		if (vlcPath != null) MediaFileParser.parseMediaPath(mediaPath);
 	}
 	
+	/**
+	 * @return Value of musical tempo attribute
+	 */
 	public static float getTempo() {
 		return tempo;
 	}
 	
+	/**
+	 * Lowest musical tempo that is allowed.
+	 */
 	private static final float MIN_TEMPO = 60.0f;
+	
+	/**
+	 * Highest musical tempo that is allowed.
+	 */
 	private static final float MAX_TEMPO = 180.0f;
 
+	/**
+	 * First in chain of tempo changes.
+	 * Takes a string as this value usually comes from a text field.
+	 * Attempts to parse the string into a numeric value in a certain range.
+	 * If this was successful, the engine will be notified to update the note lengths.
+	 * If this was not successful, an error notification will be displayed and the text will be reset.
+	 * @param tempoText String that can be parsed into a numeric value between MIN_TEMPO & MAX_TEMPO
+	 */
 	public static void setTempo(String tempoText) {
 		System.out.println("Attempting to set tempo " + tempoText + ".");
 		float newTempo = 0.0f;
@@ -221,17 +309,26 @@ public class Config {
 		Engine.updateTempo();
 	}
 	
+	/**
+	 * @return Value of vlcPath attribute
+	 */
 	public static String getVlcPath() {
 		return vlcPath;
 	}
 	
+	/**
+	 * Looks for the VLC libraries at the given directory.
+	 * If they are found there, the attribute will be changed.
+	 * The Engine status will be set accordingly.
+	 * @param vlcPath Absolute path to a directory containing the VLC libraries
+	 */
 	public static void setVlcPath(String vlcPath) {
 		
 		System.out.println("Searching for VLC libraries at " + vlcPath + ".");
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
 		try {
 	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-			Config.vlcPath = vlcPath;
+			ConfigurationHandler.vlcPath = vlcPath;
 			Engine.setDidFindVlc(true);
 			System.out.println("Found VLC libraries.");
 		} catch (UnsatisfiedLinkError unsatisfied) {

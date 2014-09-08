@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
-public class VidcherooMediaFrame extends JFrame {
+public class MediaFrame extends JFrame {
 	private static final long serialVersionUID = 201408251912L;
 		    
 	private int frameX		= 300;
@@ -38,7 +38,7 @@ public class VidcherooMediaFrame extends JFrame {
 	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
 	//private EmbeddedMediaPlayer mediaPlayer;
 	
-	public VidcherooMediaFrame() {
+	public MediaFrame() {
 		this(
 			(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
 			(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.7f),
@@ -46,7 +46,7 @@ public class VidcherooMediaFrame extends JFrame {
 			);
 	}
 	
-	public VidcherooMediaFrame(int width, int height, String title) {
+	public MediaFrame(int width, int height, String title) {
 		this.frameWidth = width;
 		this.frameHeight = height;
 		setTitle(title);
@@ -58,7 +58,7 @@ public class VidcherooMediaFrame extends JFrame {
 		setResizable(true);
 		//setUndecorated(true);
 		
-		if (Config.getVlcPath() == null) {
+		if (ConfigurationHandler.getVlcPath() == null) {
 			System.err.println("ERROR: VLC path is not set.");
 			return;
 		}
