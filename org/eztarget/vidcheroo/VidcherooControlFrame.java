@@ -56,8 +56,11 @@ public class VidcherooControlFrame extends JFrame {
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
-	private JButton mediaPathButton, vlcPathButton;
+	private JButton playButton, pauseButton, mediaPathButton, vlcPathButton;
 	
+	/**
+	 *	Constructor containing entire GUI setup.
+	 */
 	public VidcherooControlFrame() {
 		System.out.println("Initialising Control Frame.");
 		System.out.println("Applying design: " + APPLY_DESIGN);
@@ -121,7 +124,7 @@ public class VidcherooControlFrame extends JFrame {
 		getContentPane().add(topPanel);
 
 		// PLAY Button:
-		JButton playButton = new JButton("Play");
+		playButton = new JButton("Play");
 		playButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT * 2);
 		playButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -140,7 +143,7 @@ public class VidcherooControlFrame extends JFrame {
 		//final boolean fShowFullscrnBtn = true;
 		
 		// PAUSE Button:
-		JButton pauseButton = new JButton("Pause");
+		pauseButton = new JButton("Pause");
 		
 		// If a full-screen button is displayed, shorten the pause button.
 		int pauseButtonWidth;
@@ -291,11 +294,21 @@ public class VidcherooControlFrame extends JFrame {
 		if (APPLY_DESIGN) statusLabel.setForeground(COLOR_2);
 		bottomPanel.add(statusLabel);
 		
+		// Disable play/pause control for now.
+		setPlayControlEnabled(false);
+		
 		setVisible(true);
 	}
 	
+	/*
+	 * Action Listener
+	 */
+	
 	ActionListener openPathListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
+			
+			if (Engine.getStatus() == VidcherooStatus.PLAYING) return;
+			
 			// Initialise a JFileChooser acting as "directories only".
 			String chosenDir = chooseDir();
 			if (chosenDir == null) return;
@@ -304,8 +317,7 @@ public class VidcherooControlFrame extends JFrame {
 			if (e.getSource().equals(mediaPathButton)) {
 				VidcherooConfig.setMediaPath(chosenDir);
 			} else if (e.getSource().equals(vlcPathButton)){
-				boolean didSetVlcPath = VidcherooConfig.setVlcPath(chosenDir);
-				if (!didSetVlcPath) chooseDir();
+				VidcherooConfig.setVlcPath(chosenDir);
 			} else {
 				System.err.println("Unknown action event source: " + e.getSource());
 			}
@@ -342,12 +354,44 @@ public class VidcherooControlFrame extends JFrame {
 			
 		}
 	};
+	
+	/*
+	 * GUI Enabler/Disabler
+	 */
+	
+	public void setPlayControlEnabled(boolean enabled) {
+		playButton.setEnabled(enabled);
+		pauseButton.setEnabled(enabled);
+	}
+	
+	public void setPathControlEnabled(boolean enabled) {
+		mediaPathButton.setEnabled(enabled);
+		vlcPathButton.setEnabled(enabled);
+	}
+	
+	/*
+	 * Getter/Setter
+	 */
+	
+	/**
+	 * @return The text that is currently in the bottom status label.
+	 */
+	public String getStatusText() {
+		if (statusLabel == null) return "";
+		else return statusLabel.getText();
+	}
 
+	/**
+	 * @param status The text that should be displayed in the bottom status label.
+	 */
 	public void setStatusText(String status) {
 		statusLabel.setText(status);
 	}
 	
+	/**
+	 * @param tempo The float value that will be displayed in the tempo text field.
+	 */
 	public void setTempoText(float tempo) {
-		tempoTextField.setText(String.format("%g", tempo));
+		tempoTextField.setText(String.format("%.1f", tempo));
 	}
 }

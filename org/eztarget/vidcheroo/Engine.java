@@ -143,14 +143,19 @@ public class Engine {
 			case READY:
 				if (mediaFrame == null) mediaFrame = new VidcherooMediaFrame();
 				controlFrame.setStatusText("Ready.");
+				controlFrame.setPlayControlEnabled(true);
+				controlFrame.setPathControlEnabled(true);
 				controlFrame.setEnabled(true);
 				break;
 			case PLAYING:
 				controlFrame.setStatusText("Playing.");
+				controlFrame.setPathControlEnabled(false);
 				controlFrame.setEnabled(true);
 				break;
 			case PARSING:
 				controlFrame.setStatusText("Analysing files.");
+				controlFrame.setPlayControlEnabled(false);
+				controlFrame.setPathControlEnabled(false);
 				controlFrame.setEnabled(false);
 				break;
 			default:
@@ -282,6 +287,16 @@ public class Engine {
 	private static final int BLINK_TIME_SHOW = 600;
 	private static final int BLINK_TIME_HIDE = 200;
 	private static final short BLINK_REPEATS = 5;
+	
+	private static void blinkStatusText() {
+		if (controlFrame == null) {
+			System.err.println("ERROR: Control frame not initialised.");
+			return;
+		}
+		
+		updateStatus();
+		blinkStatusText(controlFrame.getStatusText());
+	}
 
 	public static void blinkStatusText(String statusText) {
 		if (controlFrame == null) {
@@ -395,6 +410,8 @@ public class Engine {
 	}
 
 	public static void setDidFindVlc(boolean didFindVlc) {
+		if (!didFindVlc) blinkStatusText();
+		
 		Engine.didFindVlc = didFindVlc;
 		updateStatus();
 	}

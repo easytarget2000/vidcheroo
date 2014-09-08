@@ -225,8 +225,8 @@ public class VidcherooConfig {
 		return vlcPath;
 	}
 	
-	public static boolean setVlcPath(String vlcPath) {
-		//TODO: Check if this contains the libraries.
+	public static void setVlcPath(String vlcPath) {
+		
 		System.out.println("Searching for VLC libraries at " + vlcPath + ".");
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
 		try {
@@ -234,18 +234,13 @@ public class VidcherooConfig {
 			VidcherooConfig.vlcPath = vlcPath;
 			Engine.setDidFindVlc(true);
 			System.out.println("Found VLC libraries.");
-			return true;
 		} catch (UnsatisfiedLinkError unsatisfied) {
-			System.err.println("ERROR: Could not find VLC libraries.");
-			Engine.setDidFindVlc(false);
-			vlcPath = null;
-			return false;
+			System.err.println("ERROR: Could not find VLC libraries at " + vlcPath + ".");
 		} catch (Exception ex) {
-			Engine.setDidFindVlc(false);
 			ex.printStackTrace();
-			vlcPath = null;
-			return false;
 		}
+		
+		if (vlcPath == null) Engine.setDidFindVlc(false);
 	}
 	
 }
