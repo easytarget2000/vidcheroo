@@ -17,6 +17,7 @@ A video is worth a thousand pictures: http://vimeo.com/easytarget/vidcheroo1
 
 The project is currently in stable alpha mode and continuously tested on OSX Mavericks and Windows 8.1.
 Latest alpha releases can be found here: http://easy-target.org/downloads/vidcheroo-latest.jar
+'java -jar vidcheroo-latest.jar' with jre1.6, please.
 
 Vidcheroo does not come with sample videos. If you need files for the media feed, feel free to contact me.
 
