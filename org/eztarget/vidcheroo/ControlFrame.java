@@ -371,7 +371,7 @@ public class ControlFrame extends JFrame {
 	public void setPlayControlEnabled(boolean enabled) {
 		playButton.setEnabled(enabled);
 		pauseButton.setEnabled(enabled);
-		if (fullscreenButton != null) fullscreenButton.setEnabled(true);
+		if (fullscreenButton != null) fullscreenButton.setEnabled(enabled);
 	}
 	
 	/**

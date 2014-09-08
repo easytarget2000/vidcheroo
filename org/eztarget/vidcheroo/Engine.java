@@ -275,8 +275,14 @@ public class Engine {
 	public static void toggleFullscreen() {
 		if (mediaFrame == null) return;
 		
-		pause();
-		mediaFrame.stop();
+		boolean resumeAfterToggle = false;
+		
+		if (status == Status.PLAYING) {
+			resumeAfterToggle = true;
+			pause();
+			mediaFrame.stop();
+		}
+
 		
 		// Toggle boolean first.
 		isFullScreen = !isFullScreen;
@@ -284,7 +290,7 @@ public class Engine {
 		if (isFullScreen) mediaFrame.setWindowed(false);
 		else mediaFrame.setWindowed(true);
 		
-		play();
+		if (resumeAfterToggle) play();
 	}
 	
 	private static final int BLINK_TIME_SHOW = 600;
