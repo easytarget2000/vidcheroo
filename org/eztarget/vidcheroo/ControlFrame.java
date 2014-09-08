@@ -346,14 +346,14 @@ public class ControlFrame extends JFrame {
 			
 			for (int i = 0; i < NoteLength.readableNoteLengths.length; i++) {
 				if (actionCommand == NoteLength.readableNoteLengths[i]) {
-					Engine.setBeatFraction(NoteLength.tempoMultipliers[i]);
+					Engine.setTempoMultiplier(NoteLength.tempoMultipliers[i]);
 					selectionIsValid = true;
 				}
 			}
 			
 			if (!selectionIsValid) {
 				// Default is 1/4.
-				Engine.setBeatFraction(NoteLength.tempoMultipliers[2]);
+				Engine.setTempoMultiplier(NoteLength.tempoMultipliers[2]);
 			}
 			
 		}
