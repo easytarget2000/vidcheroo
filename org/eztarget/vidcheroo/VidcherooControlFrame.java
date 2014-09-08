@@ -223,8 +223,8 @@ public class VidcherooControlFrame extends JFrame {
 		
 		int beatButtonY = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
 		
-		for (int i = 0; i < BeatHandler.readableBeatLengths.length; i++) {
-			JButton beatButton = new JButton(BeatHandler.readableBeatLengths[i]);
+		for (int i = 0; i < Beat.readableBeatLengths.length; i++) {
+			JButton beatButton = new JButton(Beat.readableBeatLengths[i]);
 			
 			// Even buttons are left, uneven buttons are right.
 			int beatButtonX;
@@ -340,16 +340,16 @@ public class VidcherooControlFrame extends JFrame {
 			
 			boolean selectionIsValid = false;
 			
-			for (int i = 0; i < BeatHandler.readableBeatLengths.length; i++) {
-				if (actionCommand == BeatHandler.readableBeatLengths[i]) {
-					Engine.setBeatFraction(BeatHandler.tempoMultipliers[i]);
+			for (int i = 0; i < Beat.readableBeatLengths.length; i++) {
+				if (actionCommand == Beat.readableBeatLengths[i]) {
+					Engine.setBeatFraction(Beat.tempoMultipliers[i]);
 					selectionIsValid = true;
 				}
 			}
 			
 			if (!selectionIsValid) {
 				// Default is 1/4.
-				Engine.setBeatFraction(BeatHandler.tempoMultipliers[2]);
+				Engine.setBeatFraction(Beat.tempoMultipliers[2]);
 			}
 			
 		}

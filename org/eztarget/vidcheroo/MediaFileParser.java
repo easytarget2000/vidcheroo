@@ -26,12 +26,16 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
+/**
+ * Singleton class that parses, stores and restores all available media files of a Vidcheroo session.
+ * 
+ * @author michel@easy-target.org
+ */
 public class MediaFileParser {
 	private static MediaFileParser instance = null;
 			
 	private static ArrayList<VidcherooMediaFile> mediaFiles = new ArrayList<VidcherooMediaFile>();
-	//TODO: Read this value from stored settings.
-		
+	
 	protected MediaFileParser() {
 		
 	}
@@ -51,6 +55,12 @@ public class MediaFileParser {
 		".mp3", ".m4a", ".wav", ".aif", ".aiff", ".ogg", ".flac", ".mp2", ".cda", ".mod", ".xm", ".it"
 		};
 	
+	/**
+	 * Opens all media files in a given directory
+	 * and stores their file name and length in a properties file in the same folder.
+	 * 
+	 * @param fMediaPath Absolute directory path
+	 */
 	public static void parseMediaPath(final String fMediaPath) {
 		if (Engine.hasFoundVlc() == false) {
 			return;
@@ -78,7 +88,7 @@ public class MediaFileParser {
 						for (final File fileEntry : fileDirectory.listFiles()) {
 							if (fileEntry.getName().equals(PROPERTY_FILE_NAME)) {
 								System.out.println(PROPERTY_FILE_NAME + " found.");
-								restoreAnalysationProperties(fMediaPath);
+								restoreAnalyzationProperties(fMediaPath);
 								isAnalysed = true;
 								break;
 							}
@@ -162,6 +172,12 @@ public class MediaFileParser {
 		parseThread.start();
 	}
 	
+	/**
+	 * Requires an initialised array list of media files.
+	 * Returns a random file from the list.
+	 * 
+	 * @return A random VidcherooMediaFile object
+	 */
 	public static VidcherooMediaFile getRandomMediaFile() {
 		if(mediaFiles.size() > 0) {
 			int randomMediaIndex = (int) (Math.random() * mediaFiles.size());
@@ -172,15 +188,24 @@ public class MediaFileParser {
 		}
 	}
 	 
+	/**
+	 * @return The number of available media files.
+	 */
 	public static int getFileListLength() {
-		return mediaFiles.size();
+		if (mediaFiles == null) return 0;
+		else return mediaFiles.size();
 	}
 	
 	/*
-	 * Store & Restore Analysation Results
+	 * Store & Restore Analyzation Results
 	 */
 	
-	private static void restoreAnalysationProperties(String fMediaPath) {
+	/**
+	 * Restores a list of VidcherooMediaFile objects by opening the properties file in the given directory.
+	 * 
+	 * @param fMediaPath Absolute path to directory containing properties file.
+	 */
+	private static void restoreAnalyzationProperties(String fMediaPath) {
 		InputStream input = null;
 	 
 		try {
@@ -227,6 +252,12 @@ public class MediaFileParser {
 		}
 	}
 	
+	/**
+	 * Stores a given Properties object as a duration properties file.
+	 * 
+	 * @param properties Preferably a duration-conform Properties object
+	 * @param mediaPath Absolute path of directory in which to store the file in
+	 */
 	private static void storeProperties(Properties properties, String mediaPath) {
 		// Save the analysed properties, if at least 2 were found.
 		if (mediaFiles.size() > 1) {
@@ -250,4 +281,5 @@ public class MediaFileParser {
 			}
 		}
 	}
+	
 }

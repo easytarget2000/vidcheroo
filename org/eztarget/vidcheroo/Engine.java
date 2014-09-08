@@ -24,8 +24,11 @@ import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.locks.LockSupport;
 
-//import com.apple.eawt.FullScreenUtilities;
-
+/**
+ * Singleton class that handles the play-back flow and Object communication of a Vidcheroo session.
+ * 
+ * @author michel@easy-target.org
+ */
 public class Engine {
 
 	private static Engine instance = null;
@@ -377,19 +380,19 @@ public class Engine {
 				play();
 				break;
 			case 81:
-				setBeatFraction(BeatHandler.tempoMultipliers[0]);
+				setBeatFraction(Beat.tempoMultipliers[0]);
 				break;
 			case 87:
-				setBeatFraction(BeatHandler.tempoMultipliers[1]);
+				setBeatFraction(Beat.tempoMultipliers[1]);
 				break;
 			case 69:
-				setBeatFraction(BeatHandler.tempoMultipliers[2]);
+				setBeatFraction(Beat.tempoMultipliers[2]);
 				break;
 			case 82:
-				setBeatFraction(BeatHandler.tempoMultipliers[3]);
+				setBeatFraction(Beat.tempoMultipliers[3]);
 				break;
 			case 84:
-				setBeatFraction(BeatHandler.tempoMultipliers[4 ]);
+				setBeatFraction(Beat.tempoMultipliers[4 ]);
 				break;
 			default:
 				break;
