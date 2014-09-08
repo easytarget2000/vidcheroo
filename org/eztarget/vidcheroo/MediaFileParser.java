@@ -34,7 +34,7 @@ import java.util.Properties;
 public class MediaFileParser {
 	private static MediaFileParser instance = null;
 			
-	private static ArrayList<VidcherooMediaFile> mediaFiles = new ArrayList<VidcherooMediaFile>();
+	private static ArrayList<MediaFile> mediaFiles = new ArrayList<MediaFile>();
 	
 	protected MediaFileParser() {
 		
@@ -72,7 +72,7 @@ public class MediaFileParser {
 			return;
 		}
 		
-		Engine.setStatus(VidcherooStatus.PARSING);
+		Engine.setStatus(Status.PARSING);
 		
 		Thread parseThread = new Thread() {
 			public void run() {
@@ -99,7 +99,7 @@ public class MediaFileParser {
 							// Create a small media frame that is used to shortly play the files, parse them and get their length.
 							VidcherooMediaFrame parseFrame;
 							parseFrame = new VidcherooMediaFrame(PARSE_FRAME_WIDTH, PARSE_FRAME_HEIGHT, "Vidcheroo Analyser");
-							mediaFiles = new ArrayList<VidcherooMediaFile>();
+							mediaFiles = new ArrayList<MediaFile>();
 							
 							// At the end, store the result in a properties file.
 							Properties properties = new Properties();
@@ -127,13 +127,13 @@ public class MediaFileParser {
 									if (!isBlacklisted) {
 										String filePath = fMediaPath + "/" + fileName;
 										//TODO: Only load possible media files.
-										VidcherooMediaFile file = new VidcherooMediaFile();
+										MediaFile file = new MediaFile();
 										file.path = filePath;
 										
 										if (PARSE_FILES) {
 											file.length = parseFrame.getMediaLength(filePath);
 										} else {
-											file.length = VidcherooMediaFile.NOT_PARSED;
+											file.length = MediaFile.NOT_PARSED;
 										}
 										
 										file.id = mediaFiles.size();
@@ -157,10 +157,10 @@ public class MediaFileParser {
 				System.out.println("Number of found files: " + mediaFiles.size());
 				if (mediaFiles.size() > 1) {
 					Engine.setDidFindFeed(true);
-					Engine.setStatus(VidcherooStatus.READY);
+					Engine.setStatus(Status.READY);
 				} else {
 					Engine.setDidFindFeed(false);
-					Engine.setStatus(VidcherooStatus.NOTREADY);
+					Engine.setStatus(Status.NOTREADY);
 				}
 				
 			}
@@ -178,7 +178,7 @@ public class MediaFileParser {
 	 * 
 	 * @return A random VidcherooMediaFile object
 	 */
-	public static VidcherooMediaFile getRandomMediaFile() {
+	public static MediaFile getRandomMediaFile() {
 		if(mediaFiles.size() > 0) {
 			int randomMediaIndex = (int) (Math.random() * mediaFiles.size());
 			return mediaFiles.get(randomMediaIndex);
@@ -210,7 +210,7 @@ public class MediaFileParser {
 	 
 		try {
 			// (Re-)initialise the media file list.
-			mediaFiles = new ArrayList<VidcherooMediaFile>();
+			mediaFiles = new ArrayList<MediaFile>();
 			
 			// Load the properties file in the given directory.
 			input = new FileInputStream(fMediaPath + "/" + PROPERTY_FILE_NAME);
@@ -224,13 +224,13 @@ public class MediaFileParser {
 			while (enumeration.hasMoreElements()) {
 				String propKey = (String) enumeration.nextElement();
 				String propValue = prop.getProperty(propKey);
-				VidcherooMediaFile mediaFile = new VidcherooMediaFile();
+				MediaFile mediaFile = new MediaFile();
 				mediaFile.id = idCounter;
 				mediaFile.path = propKey;
 				try {
 					mediaFile.length = Long.parseLong(propValue);
 				} catch (Exception e) {
-					mediaFile.length = VidcherooMediaFile.LENGTH_INDETERMINABLE;
+					mediaFile.length = MediaFile.LENGTH_INDETERMINABLE;
 					System.err.println("WARNING: Could not restore length for " + mediaFile.path + ".");
 				}
 				

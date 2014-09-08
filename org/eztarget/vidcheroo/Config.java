@@ -31,9 +31,9 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-public class VidcherooConfig {
+public class Config {
 	
-	private static VidcherooConfig instance = null;
+	private static Config instance = null;
 
 	// TODO: Find further variations of this.
 	private static final String VLC_DEFAULT_PATH_LIN = "/usr/lib/vlc";
@@ -48,7 +48,7 @@ public class VidcherooConfig {
 	 * Singleton Constructor Methods
 	 */
 	
-	protected VidcherooConfig() {
+	protected Config() {
 		restoreConfigProperties();
 		
 		// TODO: Find VLC without help.
@@ -80,9 +80,9 @@ public class VidcherooConfig {
 		System.out.println("Using feed path: " + mediaPath);
 	}
 
-	public static VidcherooConfig getInstance() {
+	public static Config getInstance() {
 		if (instance == null) {
-			instance = new VidcherooConfig();
+			instance = new Config();
 		}
 		return instance;
 	}
@@ -189,7 +189,7 @@ public class VidcherooConfig {
 	}
 	
 	public static void setMediaPath(String mediaPath) {
-		VidcherooConfig.mediaPath = mediaPath;
+		Config.mediaPath = mediaPath;
 		if (vlcPath != null) MediaFileParser.parseMediaPath(mediaPath);
 	}
 	
@@ -231,7 +231,7 @@ public class VidcherooConfig {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
 		try {
 	        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-			VidcherooConfig.vlcPath = vlcPath;
+			Config.vlcPath = vlcPath;
 			Engine.setDidFindVlc(true);
 			System.out.println("Found VLC libraries.");
 		} catch (UnsatisfiedLinkError unsatisfied) {

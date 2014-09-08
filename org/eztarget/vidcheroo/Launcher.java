@@ -51,14 +51,14 @@ public class Launcher {
 		}
 		
 		// Initialise the configuration.
-		VidcherooConfig.getInstance();
+		Config.getInstance();
 		
 		// The GUI is running in its own thread.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				
 				System.out.println("Starting Vidcheroo GUI.");
-				VidcherooControlFrame controlFrame = new VidcherooControlFrame();
+				ControlFrame controlFrame = new ControlFrame();
 
 				Engine.setControlFrame(controlFrame);
 				

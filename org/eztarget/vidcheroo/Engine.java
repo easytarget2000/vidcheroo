@@ -36,10 +36,10 @@ public class Engine {
 	// Initialise worst status, improve from there.
 	private static boolean didFindFeed		= false;
 	private static boolean didFindVlc		= false;
-	private static VidcherooStatus status 	= VidcherooStatus.NOTREADY;
+	private static Status status 	= Status.NOTREADY;
 	
 	private static SupportedOperatingSystems os = SupportedOperatingSystems.UNK;
-	private static VidcherooControlFrame controlFrame;
+	private static ControlFrame controlFrame;
 	private static VidcherooMediaFrame mediaFrame;
 	
 	private static boolean isFullScreen = false;
@@ -90,9 +90,9 @@ public class Engine {
 		updateBeatTime();
 	}
 
-	public static void setControlFrame(VidcherooControlFrame controlFrame) {
+	public static void setControlFrame(ControlFrame controlFrame) {
 		Engine.controlFrame = controlFrame;
-		Engine.controlFrame.setTempoText(VidcherooConfig.getTempo());
+		Engine.controlFrame.setTempoText(Config.getTempo());
 	}
 
 	public static void setMediaFrame(VidcherooMediaFrame mediaFrame) {
@@ -116,7 +116,7 @@ public class Engine {
 		}
 	}
 	
-	public static VidcherooStatus getStatus() {
+	public static Status getStatus() {
 		return status;
 	}
 	
@@ -125,7 +125,7 @@ public class Engine {
 	 * 
 	 * @param newStatus		Status to change to
 	 */
-	public static void setStatus(VidcherooStatus newStatus) {
+	public static void setStatus(Status newStatus) {
 		Engine.status = newStatus;
 		System.out.println("New Status: " + newStatus.toString());
 		updateStatus();
@@ -196,23 +196,23 @@ public class Engine {
 	 * 
 	 */
 	public static void play() {
-		if (status == VidcherooStatus.PLAYING) {
+		if (status == Status.PLAYING) {
 			Engine.sleepCounter = beatSleepLength;
 		}
 		
-		if (status == VidcherooStatus.READY) {
+		if (status == Status.READY) {
 
 			Thread playThread = new Thread() {
 				public void run() {
 					System.out.println("Starting new Engine Play thread.");
-					setStatus(VidcherooStatus.PLAYING);
+					setStatus(Status.PLAYING);
 					
 					// We will randomly skip through long videos.
 					Random rand = new Random();
 					
-					while (status == VidcherooStatus.PLAYING) {
+					while (status == Status.PLAYING) {
 						// Play the next file.
-						VidcherooMediaFile mediaFile = MediaFileParser.getRandomMediaFile();
+						MediaFile mediaFile = MediaFileParser.getRandomMediaFile();
 						
 						float startTime = 0f;
 						float skipMinLength = beatSleepLength/1000f + 0.1f;
@@ -257,10 +257,10 @@ public class Engine {
 	 */
 	public static void pause() {
 		// Only if we are playing, we can set the status to ready.
-		if (status == VidcherooStatus.PLAYING) {
+		if (status == Status.PLAYING) {
 			Engine.mediaFrame.pause();
 			Engine.sleepCounter = beatSleepLength;
-			setStatus(VidcherooStatus.READY);
+			setStatus(Status.READY);
 		}
 	}
 	
@@ -335,13 +335,13 @@ public class Engine {
 	public static void updateTempo() {
 		Engine.updateBeatTime();
 		if (controlFrame != null) {
-			controlFrame.setTempoText(VidcherooConfig.getTempo());
+			controlFrame.setTempoText(Config.getTempo());
 		}
 	}
 	
 	public static void shutdown() {
 		System.out.println("Exiting Vidcheroo");
-		status = VidcherooStatus.READY;
+		status = Status.READY;
 		Engine.sleepCounter = beatSleepLength;
 		try {
 			if (mediaFrame != null) {
@@ -351,7 +351,7 @@ public class Engine {
 			e.printStackTrace();
 		}
 		
-		VidcherooConfig.storeConfigProperties();		
+		Config.storeConfigProperties();		
 		
 		System.exit(0);
 	}
@@ -360,7 +360,7 @@ public class Engine {
 	 *  60s / BPM * beat fraction
 	 */
 	private static void updateBeatTime() {
-		float tempo = VidcherooConfig.getTempo();
+		float tempo = Config.getTempo();
 		beatSleepLength = (int) ((60.0f / (tempo * beatFraction)) * 1000.0f);
 		System.out.println("New switch time: " + beatSleepLength);
 	}

@@ -34,7 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-public class VidcherooControlFrame extends JFrame {
+public class ControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
@@ -56,12 +56,12 @@ public class VidcherooControlFrame extends JFrame {
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
-	private JButton playButton, pauseButton, mediaPathButton, vlcPathButton;
+	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, vlcPathButton;
 	
 	/**
 	 *	Constructor containing entire GUI setup.
 	 */
-	public VidcherooControlFrame() {
+	public ControlFrame() {
 		System.out.println("Initialising Control Frame.");
 		System.out.println("Applying design: " + APPLY_DESIGN);
 		
@@ -165,7 +165,7 @@ public class VidcherooControlFrame extends JFrame {
 		
 		if (fShowFullscrnBtn) {
 			// FULLSCREEN Button
-			JButton fullscreenButton = new JButton("Fullscreen");
+			fullscreenButton = new JButton("Fullscreen");
 			fullscreenButton.setBounds(
 					ELEMENT_S_COL2_X,
 					fTopPanelRow2Y,
@@ -181,7 +181,11 @@ public class VidcherooControlFrame extends JFrame {
 				fullscreenButton.setBackground(COLOR_1);
 				fullscreenButton.setBorderPainted(false);
 			}
+			
+			fullscreenButton.setEnabled(false);
 			topPanel.add(fullscreenButton);
+		} else {
+			fullscreenButton = null;
 		}
 		
 		/*
@@ -201,7 +205,7 @@ public class VidcherooControlFrame extends JFrame {
 		tempoTextField = new JTextField();
 		tempoTextField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VidcherooConfig.setTempo(tempoTextField.getText());				
+				Config.setTempo(tempoTextField.getText());				
 			}
 		});
 		tempoTextField.setBounds(
@@ -307,7 +311,7 @@ public class VidcherooControlFrame extends JFrame {
 	ActionListener openPathListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			
-			if (Engine.getStatus() == VidcherooStatus.PLAYING) return;
+			if (Engine.getStatus() == Status.PLAYING) return;
 			
 			// Initialise a JFileChooser acting as "directories only".
 			String chosenDir = chooseDir();
@@ -315,9 +319,9 @@ public class VidcherooControlFrame extends JFrame {
 			System.out.println("Chosen Directory: " + chosenDir);
 			
 			if (e.getSource().equals(mediaPathButton)) {
-				VidcherooConfig.setMediaPath(chosenDir);
+				Config.setMediaPath(chosenDir);
 			} else if (e.getSource().equals(vlcPathButton)){
-				VidcherooConfig.setVlcPath(chosenDir);
+				Config.setVlcPath(chosenDir);
 			} else {
 				System.err.println("Unknown action event source: " + e.getSource());
 			}
@@ -359,11 +363,22 @@ public class VidcherooControlFrame extends JFrame {
 	 * GUI Enabler/Disabler
 	 */
 	
+	/**
+	 * Sets the enable flag of the top button elements.
+	 * 
+	 * @param enabled Boolean that will be passed on to setEnabled() of each button
+	 */
 	public void setPlayControlEnabled(boolean enabled) {
 		playButton.setEnabled(enabled);
 		pauseButton.setEnabled(enabled);
+		if (fullscreenButton != null) fullscreenButton.setEnabled(true);
 	}
 	
+	/**
+	 * Sets the enable flag of the bottom button elements.
+	 * 
+	 * @param enabled Boolean that will be passed on to setEnabled() of each button
+	 */
 	public void setPathControlEnabled(boolean enabled) {
 		mediaPathButton.setEnabled(enabled);
 		vlcPathButton.setEnabled(enabled);

@@ -58,7 +58,7 @@ public class VidcherooMediaFrame extends JFrame {
 		setResizable(true);
 		//setUndecorated(true);
 		
-		if (VidcherooConfig.getVlcPath() == null) {
+		if (Config.getVlcPath() == null) {
 			System.err.println("ERROR: VLC path is not set.");
 			return;
 		}
@@ -174,7 +174,7 @@ public class VidcherooMediaFrame extends JFrame {
 		long length = player.getMediaMeta().getLength();
 		if (length <= 0) {
 			System.err.println("WARNING: " + mediaFilePath + " is not a valid video file.");
-			length = VidcherooMediaFile.NOT_MEDIA_FILE;
+			length = MediaFile.NOT_MEDIA_FILE;
 		} else {
 			System.out.println(mediaFilePath + " " + length);
 			//System.out.println(player.getAspectRatio() + " " + player.getAudioDelay());
