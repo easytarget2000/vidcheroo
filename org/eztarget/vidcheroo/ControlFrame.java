@@ -227,8 +227,8 @@ public class ControlFrame extends JFrame {
 		
 		int beatButtonY = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
 		
-		for (int i = 0; i < Beat.readableBeatLengths.length; i++) {
-			JButton beatButton = new JButton(Beat.readableBeatLengths[i]);
+		for (int i = 0; i < NoteLength.readableNoteLengths.length; i++) {
+			JButton beatButton = new JButton(NoteLength.readableNoteLengths[i]);
 			
 			// Even buttons are left, uneven buttons are right.
 			int beatButtonX;
@@ -344,16 +344,16 @@ public class ControlFrame extends JFrame {
 			
 			boolean selectionIsValid = false;
 			
-			for (int i = 0; i < Beat.readableBeatLengths.length; i++) {
-				if (actionCommand == Beat.readableBeatLengths[i]) {
-					Engine.setBeatFraction(Beat.tempoMultipliers[i]);
+			for (int i = 0; i < NoteLength.readableNoteLengths.length; i++) {
+				if (actionCommand == NoteLength.readableNoteLengths[i]) {
+					Engine.setBeatFraction(NoteLength.tempoMultipliers[i]);
 					selectionIsValid = true;
 				}
 			}
 			
 			if (!selectionIsValid) {
 				// Default is 1/4.
-				Engine.setBeatFraction(Beat.tempoMultipliers[2]);
+				Engine.setBeatFraction(NoteLength.tempoMultipliers[2]);
 			}
 			
 		}
