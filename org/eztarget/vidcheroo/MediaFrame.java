@@ -28,16 +28,43 @@ import javax.swing.JFrame;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
+/**
+ * Used as the VLC "display" for main video function, as well as, parsing media files.
+ * 
+ * @author michel@easy-target.org
+ *
+ */
 public class MediaFrame extends JFrame {
-	private static final long serialVersionUID = 201408251912L;
-		    
-	private int frameX		= 300;
-	private int frameY		= 40;
-	private int frameWidth, frameHeight;
-		
-	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
-	//private EmbeddedMediaPlayer mediaPlayer;
 	
+	/**
+	 * Mandatory but not used.
+	 */
+	private static final long serialVersionUID = 2014091023323915L;
+	
+	/**
+	 * X coordinate of the upper left corner of this frame.
+	 */
+	private int frameX = 300;
+	
+	/**
+	 * Y coordinate of the upper left corner of this frame.
+	 */
+	private int frameY = 40;
+	
+	/**
+	 * Width and height of this frame.
+	 */
+	private int frameWidth, frameHeight;
+	
+	/**
+	 * Contains the VLC media player.
+	 */
+	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
+	
+	/**
+	 * Default constructor
+	 * Calls specific constructor method with width and height at 70% of the screen resolution.
+	 */
 	public MediaFrame() {
 		this(
 			(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.7f),
@@ -46,6 +73,13 @@ public class MediaFrame extends JFrame {
 			);
 	}
 	
+	/**
+	 * Specific constructor
+	 * Sets the given bounds and various other GUI settings.
+	 * @param width	Frame width
+	 * @param height Frame height
+	 * @param title Frame title
+	 */
 	public MediaFrame(int width, int height, String title) {
 		this.frameWidth = width;
 		this.frameHeight = height;
@@ -64,7 +98,6 @@ public class MediaFrame extends JFrame {
 		}
 		
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-		mediaPlayerComponent.getMediaPlayer().setVolume(0);
         setContentPane(mediaPlayerComponent);
         
         if (Engine.getOs() == SupportedOperatingSystems.OSX) {
@@ -74,6 +107,7 @@ public class MediaFrame extends JFrame {
 		/*
 		 * Application Icon
 		 */
+        
 		java.net.URL url = ClassLoader.getSystemResource(Launcher.ICON_PATH);
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Image image = kit.createImage(url);
@@ -82,6 +116,9 @@ public class MediaFrame extends JFrame {
         setVisible(true);
 	}
 	
+	/**
+	 * Enables the native MacOS X full-screen button.
+	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private void enableOSXFullscreen() {
 		try {
@@ -96,12 +133,20 @@ public class MediaFrame extends JFrame {
 	
 	//private static final String[] VLC_OPTIONS = {":quiet", ":no-audio", ":no-video-title-show", ":repeat"};
 	
+	/**
+	 * Sets VLC options and plays the given file starting at a given time.
+	 * @param mediaPath Absolute path to a media file
+	 * @param startTime Value in seconds at which to skip to when the playback begins. Seems to create a slight visible delay if not 0.
+	 */
 	public void playMediaFilePath(String mediaPath, float startTime) {
 		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":repeat", ":start-time=" + startTime};
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
 		//mediaPlayerComponent.getMediaPlayer().skipPosition(startTime);
 	}
 
+	/**
+	 * If the media player is playing, it is paused.
+	 */
 	public void pause() {
 		if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
 			System.out.println("Media frame pauses playback.");
@@ -109,13 +154,17 @@ public class MediaFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Always dead stops the media player.
+	 */
 	public void stop() {
 		mediaPlayerComponent.getMediaPlayer().stop();
 	}
 
 	/**
-	 * 
-	 * @param windowed
+	 * Switches between windowed and full-screen mode.
+	 * Only to be used on OS other than OSX.
+	 * @param windowed Switch to full-screen mode if false.
 	 */
 	public void setWindowed(boolean windowed) {
 		//setVisible(false);
@@ -162,10 +211,11 @@ public class MediaFrame extends JFrame {
 		//repaint();
 	}
 
-	public void setMediaTime(long time) {
-		mediaPlayerComponent.getMediaPlayer().setTime(time);
-	}
-
+	/**
+	 * Used for parsing files.
+	 * @param mediaFilePath Absolute path to the file that is to be analysed.
+	 * @return The length in ms (or error code value) of the media file.
+	 */
 	public long getMediaLength(String mediaFilePath) {
 		MediaPlayer player = mediaPlayerComponent.getMediaPlayer();
 		player.playMedia(mediaFilePath);
@@ -174,7 +224,7 @@ public class MediaFrame extends JFrame {
 		long length = player.getMediaMeta().getLength();
 		if (length <= 0) {
 			System.err.println("WARNING: " + mediaFilePath + " is not a valid video file.");
-			length = MediaFile.NOT_MEDIA_FILE;
+			length = MediaFile.NOT_VIDEO_FILE;
 		} else {
 			System.out.println(mediaFilePath + " " + length);
 			//System.out.println(player.getAspectRatio() + " " + player.getAudioDelay());

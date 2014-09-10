@@ -19,6 +19,13 @@ package org.eztarget.vidcheroo;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+/**
+ * Contains main method.
+ * Sets icons, look&feel, starts a GUI thread and the engine.
+ * 
+ * @author michel@easy-target.org
+ *
+ */
 public class Launcher {
 	
 	public static final String ICON_PATH = "org/eztarget/vidcheroo/resources/icon.png";

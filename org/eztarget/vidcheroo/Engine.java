@@ -133,6 +133,7 @@ public class Engine {
 		switch (keyCode) {
 			case 27:	// ESC
 				if (isFullScreen) toggleFullscreen();
+				//TODO: Close full-screen on OSX.
 				break;
 			case 32:
 				play();
@@ -333,6 +334,11 @@ public class Engine {
 	private static final long SLEEP_INTERVAL = 4l;
 	
 	/**
+	 * Videos that are longer than this might not start playing at 0 sec.
+	 */
+	private static final float SKIP_MIN_LENGTH = 6;
+	
+	/**
 	 * Counts the sleep steps. Values in ms.
 	 */
 	private static long sleepCounter = 0l;
@@ -362,15 +368,14 @@ public class Engine {
 						MediaFile mediaFile = MediaFileParser.getRandomMediaFile();
 						
 						float startTime = 0f;
-						float skipMinLength = noteSleepLength/1000f + 0.1f;
 						
 						// Only bother checking for a different start time, if we are not switching very fast.
 						if (noteSleepLength > 1000) {	
 							float mediaLength = mediaFile.length / 1000.0f;
-							if (mediaLength > skipMinLength) {
+							if (mediaLength > SKIP_MIN_LENGTH) {
 								// Skip to a random point in the media that will not let it reach the end of the file.
-								startTime = rand.nextFloat() * (mediaLength - skipMinLength);
-								System.out.println("Skipping to " + startTime + "/" + mediaLength);
+								startTime = rand.nextFloat() * (mediaLength - SKIP_MIN_LENGTH);
+								System.out.println("Skipping to " + startTime + "/" + mediaLength + " of " + mediaFile.path);
 							}
 						}
 						mediaFrame.playMediaFilePath(mediaFile.path, startTime);

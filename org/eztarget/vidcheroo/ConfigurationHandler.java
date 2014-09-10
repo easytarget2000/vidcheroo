@@ -292,9 +292,17 @@ public class ConfigurationHandler {
 		System.out.println("Attempting to set tempo " + tempoText + ".");
 		float newTempo = 0.0f;
 		
+		String tempoTextDotted = "";
+		for (int i = 0; i < tempoText.length(); i++) {
+			char c = tempoText.charAt(i);
+			
+			if (c < '0' || c  > '9') tempoTextDotted += '.';
+			else tempoTextDotted += c;
+		}
+		
 		// Attempt to read a float value from the given string.
 		try {
-			newTempo = Float.parseFloat(tempoText);
+			newTempo = Float.parseFloat(tempoTextDotted);
 		} catch(Exception ex) {
 			System.err.println(ex.toString());
 		}

@@ -16,6 +16,12 @@
 
 package org.eztarget.vidcheroo;
 
+/**
+ * Enumeration of all possible playback states of a Vidcheroo engine.
+ * 
+ * @author michel@easy-target.org
+ *
+ */
 public enum Status {
 	NOTREADY, PARSING, READY, PLAYING
 }
