@@ -336,13 +336,13 @@ public class Engine {
 	/**
 	 * Videos that are longer than this might not start playing at 0 sec.
 	 */
-	private static final float SKIP_MIN_LENGTH = 6;
+	private static final float SKIP_MIN_LENGTH = 6000l;
 	
 	/**
 	 * Counts the sleep steps. Values in ms.
 	 */
 	private static long sleepCounter = 0l;
-	
+		
 	/**
 	 * Puts the Engine into Playing state and creates a thread that loops forever until this state is left.
 	 * The thread loads a media file into the player, sleeps and then loads another one.
@@ -354,6 +354,12 @@ public class Engine {
 		}
 		
 		if (status == Status.READY) {
+			
+			/*
+			 * BEAT DETECTOR TESTING
+			 */
+			BeatDetector.getInstance();
+			//BeatDetector.start();
 
 			Thread playThread = new Thread() {
 				public void run() {
@@ -367,25 +373,49 @@ public class Engine {
 						// Play the next file.
 						MediaFile mediaFile = MediaFileParser.getRandomMediaFile();
 						
-						float startTime = 0f;
+						// Generally start a media file at t=0ms.
+						long startTime = 0l;
+						
+						// The length of the media file in ms.
+						long mediaLength = mediaFile.length;
 						
 						// Only bother checking for a different start time, if we are not switching very fast.
 						if (noteSleepLength > 1000) {	
-							float mediaLength = mediaFile.length / 1000.0f;
 							if (mediaLength > SKIP_MIN_LENGTH) {
 								// Skip to a random point in the media that will not let it reach the end of the file.
-								startTime = rand.nextFloat() * (mediaLength - SKIP_MIN_LENGTH);
+								startTime = (long) (rand.nextFloat() * (mediaLength - SKIP_MIN_LENGTH));
 								System.out.println("Skipping to " + startTime + "/" + mediaLength + " of " + mediaFile.path);
 							}
 						}
 						mediaFrame.playMediaFilePath(mediaFile.path, startTime);
+						
+						// Time value in ms at which the media file will be reset to the start.
+						// TODO: Use a rhythmically better value than the entire length.
+						long repeatTime = mediaLength - startTime - 100;
+						if (repeatTime <= 0l) {
+							System.err.println("WARNING: repeatTime=" + repeatTime + ". Will be reset.");
+							repeatTime = mediaLength;
+						}
+						
+						//DEBUG
+						//System.out.println(mediaLength + " startTime=" + startTime + " repeatTime=" + repeatTime);
 						
 						//TODO: Decide for sleep() or parkNanos().
 						final long fNanoInterval = SLEEP_INTERVAL * 1000000l;
 
 						// Sleep for one beat length.
 						try {
-							for (Engine.sleepCounter = 0l; Engine.sleepCounter < noteSleepLength; Engine.sleepCounter += SLEEP_INTERVAL) {
+							for (sleepCounter = 0l; sleepCounter < noteSleepLength; sleepCounter += SLEEP_INTERVAL) {
+								// If the sleep duration is reaching the time at which to repeat the media file,
+								// go back to the start of the video and increase the repeat time for the next loop.
+								if (sleepCounter > repeatTime) {
+									//mediaFrame.setMediaTime(0l)
+									System.out.println("Repeating after " + repeatTime + ".");
+									mediaFrame.playMediaFilePath(mediaFile.path, startTime);
+									repeatTime += repeatTime + startTime;
+									// Only add the initial start time for the first loop.
+									startTime = 0l;
+								}
 								//sleep(SLEEP_INTERVAL);
 								LockSupport.parkNanos(fNanoInterval);
 							}
@@ -408,6 +438,8 @@ public class Engine {
 	 * Pause the player and finish the play thread by rising the sleep counter value.
 	 */
 	public static void pause() {
+		
+		
 		// Only if we are playing, we can set the status to ready.
 		if (status == Status.PLAYING) {
 			Engine.mediaFrame.pause();

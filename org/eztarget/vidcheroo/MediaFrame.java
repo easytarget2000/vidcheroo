@@ -131,6 +131,10 @@ public class MediaFrame extends JFrame {
 		}
 	}
 	
+	/*
+	 * FLOW CONTROL
+	 */
+	
 	//private static final String[] VLC_OPTIONS = {":quiet", ":no-audio", ":no-video-title-show", ":repeat"};
 	
 	/**
@@ -138,8 +142,8 @@ public class MediaFrame extends JFrame {
 	 * @param mediaPath Absolute path to a media file
 	 * @param startTime Value in seconds at which to skip to when the playback begins. Seems to create a slight visible delay if not 0.
 	 */
-	public void playMediaFilePath(String mediaPath, float startTime) {
-		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":repeat", ":start-time=" + startTime};
+	public void playMediaFilePath(String mediaPath, long startTime) {
+		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":start-time=" + startTime / 1000};
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
 		//mediaPlayerComponent.getMediaPlayer().skipPosition(startTime);
 	}
@@ -159,6 +163,11 @@ public class MediaFrame extends JFrame {
 	 */
 	public void stop() {
 		mediaPlayerComponent.getMediaPlayer().stop();
+	}
+	
+	public void setMediaTime(long time) {
+		mediaPlayerComponent.getMediaPlayer().setTime(time);
+		System.out.println("Skipped to " + time);
 	}
 
 	/**
