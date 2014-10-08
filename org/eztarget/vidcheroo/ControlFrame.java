@@ -18,6 +18,7 @@ package org.eztarget.vidcheroo;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -53,10 +54,15 @@ public class ControlFrame extends JFrame {
 	private static final Color COLOR_1			= new Color(246, 127, 1);
 	private static final Color COLOR_2			= Color.WHITE;
 	private static final Color COLOR_3			= new Color(255, 147, 21);
+
+
+	private static final Color LENGTH_COLOR_HIGHLT = Color.black;
+	private static final Color LENGTH_COLOR_NORMAL = Color.orange;
 		
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
 	private JTextField tempoTextField;
 	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, vlcPathButton;
+	private JButton[] lengthButtons;
 	
 	/**
 	 *	Constructor containing entire GUI setup.
@@ -222,30 +228,34 @@ public class ControlFrame extends JFrame {
 		contentPane.add(tempoTextField);
 
 		/*
-		 * Beat Length Buttons
+		 * NOTE LENGTH BUTTONS
 		 */
 		
-		int beatButtonY = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
-		
-		for (int i = 0; i < NoteLength.readableNoteLengths.length; i++) {
-			JButton beatButton = new JButton(NoteLength.readableNoteLengths[i]);
+		int lengthButtonY = fTempoSectionRow1Y + ELEMENT_HEIGHT + MARGIN;
+		int numOfBeatButtons = NoteLength.readableNoteLengths.length;
+		lengthButtons = new JButton[numOfBeatButtons];
+		for (int i = 0; i < numOfBeatButtons; i++) {
+			JButton lengthButton = new JButton(NoteLength.readableNoteLengths[i]);
 			
 			// Even buttons are left, uneven buttons are right.
 			int beatButtonX;
 			if (i % 2 == 0) beatButtonX = MARGIN;
 			else beatButtonX = ELEMENT_S_COL2_X;
 						
-			beatButton.addActionListener(beatFracChanged);
-			beatButton.setBounds(beatButtonX, beatButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
+			lengthButton.addActionListener(beatFracChanged);
+			lengthButton.setBounds(beatButtonX, lengthButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
+			lengthButton.setForeground(LENGTH_COLOR_NORMAL);
 			if (APPLY_DESIGN) {
-				beatButton.setForeground(COLOR_2);
-				beatButton.setBackground(COLOR_3);
-				beatButton.setBorderPainted(false);
+				lengthButton.setForeground(COLOR_2);
+				lengthButton.setBackground(COLOR_3);
+				lengthButton.setBorderPainted(false);
 			}
-			contentPane.add(beatButton);
+			contentPane.add(lengthButton);
 			
 			// Move Y down if this is an uneven button.
-			if (i % 2 != 0) beatButtonY += (ELEMENT_HEIGHT * 2) + MARGIN;
+			if (i % 2 != 0) lengthButtonY += (ELEMENT_HEIGHT * 2) + MARGIN;
+			
+			lengthButtons[i] = lengthButton;
 		}
 		
 		/*
@@ -344,18 +354,17 @@ public class ControlFrame extends JFrame {
 			
 			boolean selectionIsValid = false;
 			
-			for (int i = 0; i < NoteLength.readableNoteLengths.length; i++) {
-				if (actionCommand == NoteLength.readableNoteLengths[i]) {
-					Engine.setTempoMultiplier(NoteLength.tempoMultipliers[i]);
+			for (int index = 0; index < NoteLength.readableNoteLengths.length; index++) {
+				if (actionCommand == NoteLength.readableNoteLengths[index]) {
+					Engine.setTempoMultiplier(index);
 					selectionIsValid = true;
 				}
 			}
 			
 			if (!selectionIsValid) {
 				// Default is 1/4.
-				Engine.setTempoMultiplier(NoteLength.tempoMultipliers[2]);
+				Engine.setTempoMultiplier(2);
 			}
-			
 		}
 	};
 	
@@ -382,6 +391,18 @@ public class ControlFrame extends JFrame {
 	public void setPathControlEnabled(boolean enabled) {
 		mediaPathButton.setEnabled(enabled);
 		vlcPathButton.setEnabled(enabled);
+	}
+	
+	public void setLengthButtonHighlighted(int lengthIndex) {
+		if (lengthButtons == null) {
+			System.err.println("ERROR: Note length buttons have not been initialised yet.");
+			return;
+		}
+		
+		for (int i = 0; i < lengthButtons.length; i++) {
+			if (i == lengthIndex) lengthButtons[i].setForeground(LENGTH_COLOR_HIGHLT);
+			else lengthButtons[i].setForeground(LENGTH_COLOR_NORMAL);
+		}
 	}
 	
 	/*

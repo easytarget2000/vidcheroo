@@ -1,5 +1,7 @@
 package org.eztarget.vidcheroo;
 
+import java.util.HashMap;
+
 /**
  * Stores available beat options and their multiplier counterparts.
  * Tempo is measured in quarter notes (1/4th), hence the length of one quarter note is 1 tempo unit.

@@ -145,6 +145,7 @@ public class MediaFrame extends JFrame {
 	public void playMediaFilePath(String mediaPath, long startTime) {
 		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":start-time=" + startTime / 1000};
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
+		//System.out.println("-UNZ-");
 		//mediaPlayerComponent.getMediaPlayer().skipPosition(startTime);
 	}
 

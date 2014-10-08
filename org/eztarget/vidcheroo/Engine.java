@@ -139,19 +139,19 @@ public class Engine {
 				play();
 				break;
 			case 81:
-				setTempoMultiplier(NoteLength.tempoMultipliers[0]);
+				setTempoMultiplier(0);
 				break;
 			case 87:
-				setTempoMultiplier(NoteLength.tempoMultipliers[1]);
+				setTempoMultiplier(1);
 				break;
 			case 69:
-				setTempoMultiplier(NoteLength.tempoMultipliers[2]);
+				setTempoMultiplier(2);
 				break;
 			case 82:
-				setTempoMultiplier(NoteLength.tempoMultipliers[3]);
+				setTempoMultiplier(3);
 				break;
 			case 84:
-				setTempoMultiplier(NoteLength.tempoMultipliers[4 ]);
+				setTempoMultiplier(4);
 				break;
 			default:
 				break;
@@ -228,11 +228,16 @@ public class Engine {
 	
 	/**
 	 * Changes the current note length and updates the sleep time.
-	 * @param multiplier Tempo multiplier; see NoteLength class for valid values
+	 * @param noteLengthIndex Index of the note length multiplier in NoteLength class
 	 */
-	public static void setTempoMultiplier(float multiplier) {
-		Engine.tempoMultiplier = multiplier;
-		updateNoteTime();
+	public static void setTempoMultiplier(int noteLengthIndex) {
+		if (NoteLength.tempoMultipliers.length < noteLengthIndex) {
+			System.err.println("ERROR: Cannot find note length for index " + noteLengthIndex + ".");
+		} else {
+			tempoMultiplier = NoteLength.tempoMultipliers[noteLengthIndex];
+			updateNoteTime();
+			controlFrame.setLengthButtonHighlighted(noteLengthIndex);
+		}
 	}
 
 	/**
