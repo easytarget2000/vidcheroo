@@ -153,6 +153,9 @@ public class Engine {
 			case 84:
 				setTempoMultiplier(4);
 				break;
+			case 79:
+				System.err.println("MANUALLY MARKING NOTABLE EVENT");
+				break;
 			default:
 				break;
 		}
@@ -355,7 +358,7 @@ public class Engine {
 	 */
 	public static void play() {
 		if (status == Status.PLAYING) {
-			Engine.sleepCounter = noteSleepLength;
+			sleepCounter = noteSleepLength;
 		}
 		
 		if (status == Status.READY) {
@@ -424,6 +427,7 @@ public class Engine {
 								//sleep(SLEEP_INTERVAL);
 								LockSupport.parkNanos(fNanoInterval);
 							}
+							
 							//sleep(beatSleepLength);
 						} catch (Exception ex) {
 							ex.printStackTrace();

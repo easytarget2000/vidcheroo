@@ -18,7 +18,6 @@ package org.eztarget.vidcheroo;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -39,29 +38,99 @@ public class ControlFrame extends JFrame {
 	
 	private static final long serialVersionUID = 201408251912L;
 	
-	private static final int FRAME_INITIAL_X	= 40;
-	private static final int FRAME_INITIAL_Y	= 40;
-	private static final int FRAME_WIDTH		= 240;
-	private static final int FRAME_HEIGHT		= (int) (FRAME_WIDTH * 2.2f);
-	private static final int MARGIN				= 8;
-	private static final int ELEMENT_WIDTH		= FRAME_WIDTH - (2 * MARGIN);
-	private static final int ELEMENT_WIDTH_S	= (int) (ELEMENT_WIDTH * 0.49);
-	private static final int ELEMENT_HEIGHT		= 26;
-	private static final int ELEMENT_S_COL2_X 	= FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
+	/**
+	 * Initial x-value of top-left coordinate
+	 */
+	private static final int FRAME_INITIAL_X = 40;
 	
-	private static final boolean APPLY_DESIGN	= false;
-	//private static final boolean APPLY_DESIGN	= Engine.getOs() != SupportedOperatingSystems.OSX;
-	private static final Color COLOR_1			= new Color(246, 127, 1);
-	private static final Color COLOR_2			= Color.WHITE;
-	private static final Color COLOR_3			= new Color(255, 147, 21);
+	/**
+	 * Initial y-value of top-left coordinate
+	 */
+	private static final int FRAME_INITIAL_Y = 40;
+	
+	/**
+	 * Fixed width value
+	 */
+	private static final int FRAME_WIDTH = 240;
+	
+	/**
+	 * Fixed height value, relative to width
+	 */
+	private static final int FRAME_HEIGHT = (int) (FRAME_WIDTH * 2.2f);
+	
+	/**
+	 * Margin spacing between GUI elements
+	 */
+	private static final int MARGIN = 8;
+	
+	/**
+	 * Width of large GUI elements, relative to frame width
+	 */
+	private static final int ELEMENT_WIDTH = FRAME_WIDTH - (2 * MARGIN);
+	
+	/**
+	 * Width of smaller GUI elements, half the width of large elements
+	 */
+	private static final int ELEMENT_WIDTH_S = (int) (ELEMENT_WIDTH * 0.49);
+	
+	/**
+	 * Fixed height of all GUI elements
+	 */
+	private static final int ELEMENT_HEIGHT = 26;
+	
+	/**
+	 * Fixed x-value of top-left coordinate of second-row, small GUI elements 
+	 */
+	private static final int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
+	
+	/**
+	 * Apply custom, non-OS-specific colours
+	 */
+	private static final boolean APPLY_DESIGN = false;
+	
+	/**
+	 * Custom colour for non-OS-specific design
+	 */
+	private static final Color COLOR_1 = new Color(246, 127, 1);
+	
+	/**
+	 * Custom colour for non-OS-specific design
+	 */
+	private static final Color COLOR_2 = Color.WHITE;
+	
+	/**
+	 * Custom colour for non-OS-specific design
+	 */
+	private static final Color COLOR_3 = new Color(255, 147, 21);
 
-
+	/**
+	 * Colour of the font of the highlighted note length button
+	 */
 	private static final Color LENGTH_COLOR_HIGHLT = Color.black;
+	
+	/**
+	 * Colour of the font of all non-highlighted note length button
+	 */
 	private static final Color LENGTH_COLOR_NORMAL = Color.orange;
 		
+	/**
+	 * Status label at the bottom of the control frame
+	 */
 	private JLabel statusLabel = new JLabel("Waiting for engine...");
+	
+	/**
+	 * Text field that displays and changes the current tempo/BPM
+	 */
 	private JTextField tempoTextField;
+	
+	/**
+	 * All other buttons
+	 */
 	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, vlcPathButton;
+	
+	/**
+	 * Array of note length buttons in the tempo section
+	 */
 	private JButton[] lengthButtons;
 	
 	/**
@@ -85,7 +154,7 @@ public class ControlFrame extends JFrame {
 		setTitle("Vidcheroo Controller");
 		
 		/*
-		 * Application Icon
+		 * APPLICATION ICON
 		 */
 		
 		java.net.URL url = ClassLoader.getSystemResource(Launcher.ICON_PATH);
@@ -110,7 +179,7 @@ public class ControlFrame extends JFrame {
 		}
 		
 		/*
-		 * Content Pane
+		 * CONTENT PANE
 		 */
 		
 		JPanel contentPane = (JPanel) getContentPane();
@@ -119,7 +188,7 @@ public class ControlFrame extends JFrame {
 		pack();
 		
 		/*
-		 * Top Panel
+		 * TOP PANEL
 		 */
 		
 		JPanel topPanel = new JPanel();
@@ -195,7 +264,7 @@ public class ControlFrame extends JFrame {
 		}
 		
 		/*
-		 * Tempo Section
+		 * TEMPO SECTION
 		 */
 		
 		// TEMPO Label:
@@ -259,7 +328,7 @@ public class ControlFrame extends JFrame {
 		}
 		
 		/*
-		 * Bottom Panel
+		 * BOTTOM PANEL
 		 */
 		
 		JPanel bottomPanel = new JPanel();
@@ -315,7 +384,7 @@ public class ControlFrame extends JFrame {
 	}
 	
 	/*
-	 * Action Listener
+	 * ACTION LISTENER
 	 */
 	
 	ActionListener openPathListener = new ActionListener() {
@@ -369,7 +438,7 @@ public class ControlFrame extends JFrame {
 	};
 	
 	/*
-	 * GUI Enabler/Disabler
+	 * GUI ENABLING & DISABLING
 	 */
 	
 	/**
@@ -406,7 +475,7 @@ public class ControlFrame extends JFrame {
 	}
 	
 	/*
-	 * Getter/Setter
+	 * GETTER / SETTER
 	 */
 	
 	/**

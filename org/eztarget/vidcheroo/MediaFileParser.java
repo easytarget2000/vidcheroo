@@ -32,14 +32,21 @@ import java.util.Properties;
  * @author michel@easy-target.org
  */
 public class MediaFileParser {
+	
+	/**
+	 * Singleton instance
+	 */
 	private static MediaFileParser instance = null;
 			
+	/**
+	 * All files that have been analysed and are ready to be loaded into the media player
+	 */
 	private static ArrayList<MediaFile> mediaFiles = new ArrayList<MediaFile>();
 	
-	protected MediaFileParser() {
-		
-	}
-	
+	/**
+	 * Constructor
+	 * @return Singleton instance
+	 */
 	public static MediaFileParser getInstance() {
 		if(instance == null) {
 			instance = new MediaFileParser();
@@ -47,10 +54,30 @@ public class MediaFileParser {
 		return instance;
 	}
 	
-	private static final String PROPERTY_FILE_NAME = "_durations.vch";
+	/**
+	 * File containing meta data properties
+	 */
+	private static final String PROPERTY_FILE_NAME = ".durations.vch";
+	
+	/**
+	 * DEBUG: Disables parsing
+	 */
 	private static final boolean PARSE_FILES = true;
+	
+	/**
+	 * Width of the small, temporary frame used for analysis of video files
+	 */
 	private static final int PARSE_FRAME_WIDTH = 300;
+	
+	/**
+	 * Height of the small, temporary frame used for analysis of video files
+	 */
 	private static final int PARSE_FRAME_HEIGHT = 200;
+	
+	/**
+	 * File extensions that contain media files without video;
+	 * will be ignored by the file parser
+	 */
 	private static final String[] EXTENSION_BLACKLIST = {
 		".mp3", ".m4a", ".wav", ".aif", ".aiff", ".ogg", ".flac", ".mp2", ".cda", ".mod", ".xm", ".it"
 		};
@@ -197,7 +224,7 @@ public class MediaFileParser {
 	}
 	
 	/*
-	 * Store & Restore Analyzation Results
+	 * STORING & RESTORING ANALYSIS PROPERTIES
 	 */
 	
 	/**
