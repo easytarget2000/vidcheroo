@@ -82,18 +82,31 @@ public class MediaFileParser {
 		".mp3", ".m4a", ".wav", ".aif", ".aiff", ".ogg", ".flac", ".mp2", ".cda", ".mod", ".xm", ".it"
 		};
 	
+	private static String mediaPath;
+	
 	/**
 	 * Opens all media files in a given directory
 	 * and stores their file name and length in a properties file in the same folder.
 	 * 
-	 * @param fMediaPath Absolute directory path
+	 * @param mediaPath Absolute directory path, may be null for updating previously parsed path
+	 * @param ignoreAnalysisFile Ignore existing properties files and parse all files in the folder.
 	 */
-	public static void parseMediaPath(final String fMediaPath) {
+	public static void parseMediaPath(String mediaPath, boolean ignoreAnalysisFile) {
 		if (Engine.hasFoundVlc() == false) {
 			return;
 		}
 		
-		if (fMediaPath == null) {
+		// mediaPath parameter may be null, if a previously set media path should be used.
+		if (mediaPath != null) {
+			System.out.println("Changing media path to " + mediaPath + ".");
+			MediaFileParser.mediaPath = mediaPath;
+		} else if (mediaPath.length() > 0){
+			System.out.println("Using media path: " + MediaFileParser.mediaPath);
+		}
+		
+		// The mediaPath parameter has to be set by now,
+		// otherwise this method cannot continue.
+		if (MediaFileParser.mediaPath == null) {
 			System.err.println("ERROR: Media path to parse is null.");
 			Engine.setDidFindFeed(false);
 			return;
@@ -101,7 +114,11 @@ public class MediaFileParser {
 		
 		Engine.setStatus(Status.PARSING);
 		
+		final String fMediaPath = mediaPath;
+		final boolean fIgnoreAnalysisFile = ignoreAnalysisFile;
+		
 		Thread parseThread = new Thread() {
+			
 			public void run() {
 				System.out.println("Looking for media files in " + fMediaPath);
 
@@ -111,13 +128,16 @@ public class MediaFileParser {
 					if (fileDirectory.length() > 0) {
 						boolean isAnalysed = false;
 						
-						// Go through all the files in this directory and see if one of them is a properties file.
-						for (final File fileEntry : fileDirectory.listFiles()) {
-							if (fileEntry.getName().equals(PROPERTY_FILE_NAME)) {
-								System.out.println(PROPERTY_FILE_NAME + " found.");
-								restoreAnalyzationProperties(fMediaPath);
-								isAnalysed = true;
-								break;
+						// If an update of files is not requested,
+						// go through all the files in this directory and see if one of them is a properties file.
+						if (!fIgnoreAnalysisFile) {
+							for (final File fileEntry : fileDirectory.listFiles()) {
+								if (fileEntry.getName().equals(PROPERTY_FILE_NAME)) {
+									System.out.println(PROPERTY_FILE_NAME + " found.");
+									restoreAnalyzationProperties(fMediaPath);
+									isAnalysed = true;
+									break;
+								}
 							}
 						}
 						

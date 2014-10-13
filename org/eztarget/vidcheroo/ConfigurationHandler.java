@@ -260,7 +260,7 @@ public class ConfigurationHandler {
 	 */
 	public static void setMediaPath(String mediaPath) {
 		ConfigurationHandler.mediaPath = mediaPath;
-		if (vlcPath != null) MediaFileParser.parseMediaPath(mediaPath);
+		if (vlcPath != null) MediaFileParser.parseMediaPath(mediaPath, false);
 	}
 	
 	/**

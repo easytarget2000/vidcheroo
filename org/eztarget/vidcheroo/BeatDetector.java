@@ -16,11 +16,6 @@
 
 package org.eztarget.vidcheroo;
 
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -152,32 +147,30 @@ public class BeatDetector {
 	 * @return
 	 */
 	private static int calculateRmsLevel(byte[] audioData) {
-	    long lSum = 0;
-	    for (int i=0; i<audioData.length; i++) lSum = lSum + audioData[i];
+		long lSum = 0;
+		for (int i=0; i<audioData.length; i++) lSum = lSum + audioData[i];
 
-	    double average = lSum / audioData.length;
+		double average = lSum / audioData.length;
 
-	    double sumMeanSquare = 0f;
-	    for (int j=0; j<audioData.length; j++) {
-	        sumMeanSquare = sumMeanSquare + Math.pow(audioData[j] - average, 2d);
-	    }
-	    
+		double sumMeanSquare = 0f;
+		for (int j=0; j < audioData.length; j++) {
+			sumMeanSquare = sumMeanSquare + Math.pow(audioData[j] - average, 2d);
+		}
 
-	    double averageMeanSquare = sumMeanSquare / audioData.length;
-	    int rmsLevel = (int) (Math.pow(averageMeanSquare,0.5d) + 0.5);
-	    
-	    if (DEBUG_DISPLAY_RMS) {
-	    	String levelDisplay = "Input level: ";
-	    	if (rmsLevel < 10) levelDisplay += '0';
-	    	levelDisplay += rmsLevel + " ";
-			
-	    	for (int i = 0; i < rmsLevel; i ++) {
+		double averageMeanSquare = sumMeanSquare / audioData.length;
+		int rmsLevel = (int) (Math.pow(averageMeanSquare,0.5d) + 0.5);
+
+		if (DEBUG_DISPLAY_RMS) {
+			String levelDisplay = "Input level: ";
+			if (rmsLevel < 10) levelDisplay += '0';
+			levelDisplay += rmsLevel + " ";
+
+			for (int i = 0; i < rmsLevel; i ++) {
 				levelDisplay += '|';
 			}
-	    	System.out.println(levelDisplay);
+			System.out.println(levelDisplay);
 		}
-	    
-	    return rmsLevel;
+		return rmsLevel;
 	}
 
 }

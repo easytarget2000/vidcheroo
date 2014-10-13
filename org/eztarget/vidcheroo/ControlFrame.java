@@ -79,29 +79,9 @@ public class ControlFrame extends JFrame {
 	private static final int ELEMENT_HEIGHT = 26;
 	
 	/**
-	 * Fixed x-value of top-left coordinate of second-row, small GUI elements 
+	 * Fixed x-value of top-left coordinate of second-column, small GUI elements 
 	 */
 	private static final int ELEMENT_S_COL2_X = FRAME_WIDTH - MARGIN - ELEMENT_WIDTH_S;
-	
-	/**
-	 * Apply custom, non-OS-specific colours
-	 */
-	private static final boolean APPLY_DESIGN = false;
-	
-	/**
-	 * Custom colour for non-OS-specific design
-	 */
-	private static final Color COLOR_1 = new Color(246, 127, 1);
-	
-	/**
-	 * Custom colour for non-OS-specific design
-	 */
-	private static final Color COLOR_2 = Color.WHITE;
-	
-	/**
-	 * Custom colour for non-OS-specific design
-	 */
-	private static final Color COLOR_3 = new Color(255, 147, 21);
 
 	/**
 	 * Colour of the font of the highlighted note length button
@@ -126,7 +106,7 @@ public class ControlFrame extends JFrame {
 	/**
 	 * All other buttons
 	 */
-	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, vlcPathButton;
+	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, refreshMediaButton, vlcPathButton;
 	
 	/**
 	 * Array of note length buttons in the tempo section
@@ -138,7 +118,6 @@ public class ControlFrame extends JFrame {
 	 */
 	public ControlFrame() {
 		System.out.println("Initialising Control Frame.");
-		System.out.println("Applying design: " + APPLY_DESIGN);
 		
 		//setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH + 5, FRAME_HEIGHT + 20);
 		setLocation(FRAME_INITIAL_X, FRAME_INITIAL_Y);
@@ -183,7 +162,7 @@ public class ControlFrame extends JFrame {
 		 */
 		
 		JPanel contentPane = (JPanel) getContentPane();
-		contentPane.setBackground(COLOR_2);
+		contentPane.setBackground(Color.white);
 		contentPane.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		pack();
 		
@@ -195,7 +174,6 @@ public class ControlFrame extends JFrame {
 		final int fTopPanelHeight = MARGIN + (2 * ELEMENT_HEIGHT) + MARGIN + ELEMENT_HEIGHT + MARGIN;
 		topPanel.setBounds(0, 0, FRAME_WIDTH, fTopPanelHeight);
 		topPanel.setLayout(null);
-		if (APPLY_DESIGN) topPanel.setBackground(COLOR_1);
 		getContentPane().add(topPanel);
 
 		// PLAY Button:
@@ -206,11 +184,6 @@ public class ControlFrame extends JFrame {
 				Engine.play();
 			}
 		});
-		if (APPLY_DESIGN) {
-			playButton.setForeground(COLOR_1);
-			playButton.setBackground(COLOR_2);
-			playButton.setBorderPainted(false);
-		}
 		topPanel.add(playButton);
 		
 		final int fTopPanelRow2Y = MARGIN + (ELEMENT_HEIGHT * 2) + MARGIN;
@@ -231,11 +204,6 @@ public class ControlFrame extends JFrame {
 				Engine.pause();
 			}
 		});
-		if (APPLY_DESIGN) {
-			pauseButton.setForeground(COLOR_2);
-			pauseButton.setBackground(COLOR_1);
-			pauseButton.setBorderPainted(false);
-		}
 		topPanel.add(pauseButton);
 		
 		if (fShowFullscrnBtn) {
@@ -251,11 +219,6 @@ public class ControlFrame extends JFrame {
 					Engine.toggleFullscreen();
 				}
 			});
-			if (APPLY_DESIGN) {
-				fullscreenButton.setForeground(COLOR_2);
-				fullscreenButton.setBackground(COLOR_1);
-				fullscreenButton.setBorderPainted(false);
-			}
 			
 			fullscreenButton.setEnabled(false);
 			topPanel.add(fullscreenButton);
@@ -273,7 +236,6 @@ public class ControlFrame extends JFrame {
 		final int fTempoLabelWidth = ELEMENT_WIDTH_S / 2;
 		final int fTempoSectionRow1Y = fTopPanelHeight + MARGIN;
 		tempoLabel.setBounds(MARGIN, fTempoSectionRow1Y, fTempoLabelWidth, ELEMENT_HEIGHT);
-		if (APPLY_DESIGN) tempoLabel.setForeground(COLOR_1);
 		contentPane.add(tempoLabel);
 		
 		// TEMPO Text Field:
@@ -289,11 +251,6 @@ public class ControlFrame extends JFrame {
 				FRAME_WIDTH - MARGIN - fTempoLabelWidth - MARGIN,
 				ELEMENT_HEIGHT);
 		tempoTextField.setColumns(5);
-		if (APPLY_DESIGN) {
-			tempoTextField.setForeground(COLOR_1);
-			tempoTextField.setBackground(COLOR_2);
-			tempoTextField.setBorder(null);
-		}
 		contentPane.add(tempoTextField);
 
 		/*
@@ -311,14 +268,9 @@ public class ControlFrame extends JFrame {
 			if (i % 2 == 0) beatButtonX = MARGIN;
 			else beatButtonX = ELEMENT_S_COL2_X;
 						
-			lengthButton.addActionListener(beatFracChanged);
+			lengthButton.addActionListener(noteLengthChanged);
 			lengthButton.setBounds(beatButtonX, lengthButtonY, ELEMENT_WIDTH_S, ELEMENT_HEIGHT * 2);
 			lengthButton.setForeground(LENGTH_COLOR_NORMAL);
-			if (APPLY_DESIGN) {
-				lengthButton.setForeground(COLOR_2);
-				lengthButton.setBackground(COLOR_3);
-				lengthButton.setBorderPainted(false);
-			}
 			contentPane.add(lengthButton);
 			
 			// Move Y down if this is an uneven button.
@@ -340,19 +292,19 @@ public class ControlFrame extends JFrame {
 				bottomPanelHeight
 				);
 		bottomPanel.setLayout(null);
-		if (APPLY_DESIGN) bottomPanel.setBackground(COLOR_1);
 		contentPane.add(bottomPanel);
 		
 		// FIND MEDIA FILES Button:
 		mediaPathButton = new JButton("Select Media Path");
 		mediaPathButton.addActionListener(openPathListener);
-		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH, ELEMENT_HEIGHT);
-		if (APPLY_DESIGN) {
-			mediaPathButton.setForeground(COLOR_2);
-			mediaPathButton.setBackground(COLOR_1);
-			mediaPathButton.setBorderPainted(false);
-		}
+		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH_S, ELEMENT_HEIGHT);
 		bottomPanel.add(mediaPathButton);
+		
+		// REFRESH MEDIA Button:
+		refreshMediaButton = new JButton("Refresh Media List");
+		refreshMediaButton.addActionListener(refreshMediaListener);
+		refreshMediaButton.setBounds(ELEMENT_S_COL2_X, MARGIN, ELEMENT_WIDTH_S, ELEMENT_HEIGHT);
+		bottomPanel.add(refreshMediaButton);
 		
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
 		
@@ -360,11 +312,6 @@ public class ControlFrame extends JFrame {
 		vlcPathButton = new JButton("Select VLC Path");
 		vlcPathButton.addActionListener(openPathListener);
 		vlcPathButton.setBounds(MARGIN, fBottomRow2Y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
-		if (APPLY_DESIGN) {
-			vlcPathButton.setForeground(COLOR_2);
-			vlcPathButton.setBackground(COLOR_1);
-			vlcPathButton.setBorderPainted(false);
-		}
 		bottomPanel.add(vlcPathButton);
 				
 		// STATUS Label:
@@ -374,7 +321,6 @@ public class ControlFrame extends JFrame {
 				ELEMENT_WIDTH,
 				ELEMENT_HEIGHT
 				);
-		if (APPLY_DESIGN) statusLabel.setForeground(COLOR_2);
 		bottomPanel.add(statusLabel);
 		
 		// Disable play/pause control for now.
@@ -386,6 +332,27 @@ public class ControlFrame extends JFrame {
 	/*
 	 * ACTION LISTENER
 	 */
+	
+	ActionListener noteLengthChanged = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			String actionCommand = e.getActionCommand();
+			System.out.println("Changing beat length: " + actionCommand);
+			
+			boolean selectionIsValid = false;
+			
+			for (int index = 0; index < NoteLength.readableNoteLengths.length; index++) {
+				if (actionCommand == NoteLength.readableNoteLengths[index]) {
+					Engine.setTempoMultiplier(index);
+					selectionIsValid = true;
+				}
+			}
+			
+			if (!selectionIsValid) {
+				// Default is 1/4.
+				Engine.setTempoMultiplier(2);
+			}
+		}
+	};
 	
 	ActionListener openPathListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -416,24 +383,12 @@ public class ControlFrame extends JFrame {
 		}
 	};
 	
-	ActionListener beatFracChanged = new ActionListener() {
+	ActionListener refreshMediaListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			String actionCommand = e.getActionCommand();
-			System.out.println("Changing beat length: " + actionCommand);
+			if (Engine.getStatus() == Status.PLAYING) return;
 			
-			boolean selectionIsValid = false;
-			
-			for (int index = 0; index < NoteLength.readableNoteLengths.length; index++) {
-				if (actionCommand == NoteLength.readableNoteLengths[index]) {
-					Engine.setTempoMultiplier(index);
-					selectionIsValid = true;
-				}
-			}
-			
-			if (!selectionIsValid) {
-				// Default is 1/4.
-				Engine.setTempoMultiplier(2);
-			}
+			System.out.println("Ignoring existing properties files and parsing current media path once more.");
+			MediaFileParser.parseMediaPath(null, true);
 		}
 	};
 	

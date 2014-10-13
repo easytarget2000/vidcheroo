@@ -86,8 +86,14 @@ public class Engine {
 	 */
 	private static long noteSleepLength = 500l;
 	
+	/**
+	 * Time value in ms that is used for rhythmically looping short videos
+	 * Typically the length of a 1/8th note
+	 */
+	private static long noteModuloLength = 250l;
+	
 	/*
-	 * Single Initialisation
+	 * SINGLETON INITIALISATION
 	 */
 	
 	/**
@@ -154,7 +160,7 @@ public class Engine {
 				setTempoMultiplier(4);
 				break;
 			case 79:
-				System.err.println("MANUALLY MARKING NOTABLE EVENT");
+				System.err.println("---MANUAL MARKER---");
 				break;
 			default:
 				break;
@@ -162,7 +168,7 @@ public class Engine {
 	}
 	
 	/*
-	 * Public Getter/Setter Methods
+	 * PUBLIC GETTER / SETTER
 	 */
 	
 	/**
@@ -238,7 +244,7 @@ public class Engine {
 			System.err.println("ERROR: Cannot find note length for index " + noteLengthIndex + ".");
 		} else {
 			tempoMultiplier = NoteLength.tempoMultipliers[noteLengthIndex];
-			updateNoteTime();
+			updateSleepLength();
 			controlFrame.setLengthButtonHighlighted(noteLengthIndex);
 		}
 	}
@@ -331,7 +337,7 @@ public class Engine {
 	}
 	
 	/*
-	 * Flow Control
+	 * FLOW CONTROL
 	 */
 	
 	//TODO: Tweak sleep length settings.
@@ -380,6 +386,7 @@ public class Engine {
 					while (status == Status.PLAYING) {
 						// Play the next file.
 						MediaFile mediaFile = MediaFileParser.getRandomMediaFile();
+						System.out.println(" " + mediaFile.path);
 						
 						// Generally start a media file at t=0ms.
 						long startTime = 0l;
@@ -398,15 +405,16 @@ public class Engine {
 						mediaFrame.playMediaFilePath(mediaFile.path, startTime);
 						
 						// Time value in ms at which the media file will be reset to the start.
-						// TODO: Use a rhythmically better value than the entire length.
-						long repeatTime = mediaLength - startTime - 100;
+						// The max. multiple of 1/8th notes in mediaLength - startTime
+						long repeatTime = mediaLength - startTime;
+						repeatTime -= repeatTime % noteModuloLength;
 						if (repeatTime <= 0l) {
 							System.err.println("WARNING: repeatTime=" + repeatTime + ". Will be reset.");
-							repeatTime = mediaLength;
+							repeatTime = noteModuloLength;
 						}
 						
 						//DEBUG
-						//System.out.println(mediaLength + " startTime=" + startTime + " repeatTime=" + repeatTime);
+						System.out.println("  " + mediaLength + " startTime=" + startTime + " repeatTime=" + repeatTime);
 						
 						//TODO: Decide for sleep() or parkNanos().
 						final long fNanoInterval = SLEEP_INTERVAL * 1000000l;
@@ -414,15 +422,12 @@ public class Engine {
 						// Sleep for one beat length.
 						try {
 							for (sleepCounter = 0l; sleepCounter < noteSleepLength; sleepCounter += SLEEP_INTERVAL) {
-								// If the sleep duration is reaching the time at which to repeat the media file,
-								// go back to the start of the video and increase the repeat time for the next loop.
+								// If the sleep duration is reaching the time at which this file is ending,
+								// call play() to stop the current media and ask for a new one.
 								if (sleepCounter > repeatTime) {
-									//mediaFrame.setMediaTime(0l)
-									System.out.println("Repeating after " + repeatTime + ".");
-									mediaFrame.playMediaFilePath(mediaFile.path, startTime);
-									repeatTime += repeatTime + startTime;
-									// Only add the initial start time for the first loop.
-									startTime = 0l;
+									System.out.println("Force switch at " + sleepCounter + " ms.");
+									play();
+									break;
 								}
 								//sleep(SLEEP_INTERVAL);
 								LockSupport.parkNanos(fNanoInterval);
@@ -447,8 +452,6 @@ public class Engine {
 	 * Pause the player and finish the play thread by rising the sleep counter value.
 	 */
 	public static void pause() {
-		
-		
 		// Only if we are playing, we can set the status to ready.
 		if (status == Status.PLAYING) {
 			Engine.mediaFrame.pause();
@@ -458,7 +461,7 @@ public class Engine {
 	}
 	
 	/*
-	 * Misc. Control
+	 * MISC CONTROL
 	 */
 	
 	/**
@@ -554,7 +557,10 @@ public class Engine {
 	 * Recalculates the note length and write the current tempo into the control frame.
 	 */
 	public static void updateTempo() {
-		Engine.updateNoteTime();
+		updateSleepLength();
+		float tempo = ConfigurationHandler.getTempo();
+		noteModuloLength = (long) ((60f / (tempo * 2f)) * 1000f);
+
 		if (controlFrame != null) {
 			controlFrame.setTempoText(ConfigurationHandler.getTempo());
 		}
@@ -585,9 +591,9 @@ public class Engine {
 	 * 60 sec. / BPM * tempo multiplier
 	 * The value is multiplied with 1000 to get the millisecond value. 
 	 */
-	private static void updateNoteTime() {
+	private static void updateSleepLength() {
 		float tempo = ConfigurationHandler.getTempo();
-		noteSleepLength = (int) ((60.0f / (tempo * tempoMultiplier)) * 1000.0f);
+		noteSleepLength = (long) ((60f / (tempo * tempoMultiplier)) * 1000f);
 		System.out.println("New switch time: " + noteSleepLength);
 	}
 }
