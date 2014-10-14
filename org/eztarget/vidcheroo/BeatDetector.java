@@ -78,7 +78,7 @@ public class BeatDetector {
 	}
 	
 	/*
-	 * Flow-control
+	 * FLOW CONTROL
 	 */
 
 	/**

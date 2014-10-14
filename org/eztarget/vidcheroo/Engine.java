@@ -294,6 +294,7 @@ public class Engine {
 			switch (Engine.status) {
 			case READY:
 				if (mediaFrame == null) mediaFrame = new MediaFrame();
+				mediaFrame.setVisible(true);
 				controlFrame.setStatusText("Ready.");
 				controlFrame.setPlayControlEnabled(true);
 				controlFrame.setPathControlEnabled(true);

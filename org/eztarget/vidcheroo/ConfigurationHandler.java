@@ -89,7 +89,7 @@ public class ConfigurationHandler {
 	protected ConfigurationHandler() {
 		restoreConfigProperties();
 		
-		// TODO: Find VLC without help.
+		// TODO: Find VLC completely automatically.
 		if (vlcPath == null) {
 			switch (Engine.getOs()) {
 			case LIN:
@@ -107,7 +107,6 @@ public class ConfigurationHandler {
 			}
 		}
 		
-		// TODO: Read these values from settings or open file picker dialogue.
 		if (mediaPath == null) {
 			URL url = Launcher.class.getResource("feed/");
 			if (url != null) {
@@ -133,8 +132,6 @@ public class ConfigurationHandler {
 	/*
 	 * Properties File
 	 */
-
-	//TODO: Test if getProtectionDomain() causes access problems.
 	
 	/**
 	 * The absolute path to the directory from which the Launcher has been started.

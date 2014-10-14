@@ -297,12 +297,14 @@ public class ControlFrame extends JFrame {
 		mediaPathButton = new JButton("Set Media Path");
 		mediaPathButton.addActionListener(openPathListener);
 		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH - ELEMENT_HEIGHT - MARGIN, ELEMENT_HEIGHT);
+		mediaPathButton.setToolTipText("Select a path in which to look for video files.");
 		bottomPanel.add(mediaPathButton);
 		
 		// REFRESH MEDIA Button:
 		updateMediaButton = new JButton("\u27f2");
 		updateMediaButton.addActionListener(refreshMediaListener);
 		updateMediaButton.setBounds(FRAME_WIDTH - MARGIN * 2 - ELEMENT_HEIGHT, MARGIN, ELEMENT_HEIGHT, ELEMENT_HEIGHT);
+		updateMediaButton.setToolTipText("Reanalyse all files in the currently selected media path.");
 		bottomPanel.add(updateMediaButton);
 		
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
@@ -311,6 +313,7 @@ public class ControlFrame extends JFrame {
 		vlcPathButton = new JButton("Select VLC Path");
 		vlcPathButton.addActionListener(openPathListener);
 		vlcPathButton.setBounds(MARGIN, fBottomRow2Y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+		vlcPathButton.setToolTipText("Select the path containing the VLC libraries.");
 		bottomPanel.add(vlcPathButton);
 				
 		// STATUS Label:

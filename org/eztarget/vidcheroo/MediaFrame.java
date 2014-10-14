@@ -134,9 +134,7 @@ public class MediaFrame extends JFrame {
 	/*
 	 * FLOW CONTROL
 	 */
-	
-	//private static final String[] VLC_OPTIONS = {":quiet", ":no-audio", ":no-video-title-show", ":repeat"};
-	
+		
 	/**
 	 * Sets VLC options and plays the given file starting at a given time.
 	 * @param mediaPath Absolute path to a media file
@@ -144,13 +142,17 @@ public class MediaFrame extends JFrame {
 	 */
 	public void playMediaFilePath(String mediaPath, long startTime) {
 		String[] vlcOptions = {":quiet", ":no-audio", ":no-video-title-show", ":start-time=" + startTime / 1000};
+		
+		// Discard the start-time option, if the startTime value is nonsensical.
+		if (startTime <= 0) vlcOptions[3] = "";
+		
 		mediaPlayerComponent.getMediaPlayer().playMedia(mediaPath, vlcOptions);
 		//System.out.println("-UNZ-");
 		//mediaPlayerComponent.getMediaPlayer().skipPosition(startTime);
 	}
 
 	/**
-	 * If the media player is playing, it is paused.
+	 * If the media player is playing, it will be paused.
 	 */
 	public void pause() {
 		if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
@@ -166,6 +168,10 @@ public class MediaFrame extends JFrame {
 		mediaPlayerComponent.getMediaPlayer().stop();
 	}
 	
+	/**
+	 * Skip the video to a certain point.
+	 * @param time Value in ms to move the video to
+	 */
 	public void setMediaTime(long time) {
 		mediaPlayerComponent.getMediaPlayer().setTime(time);
 		System.out.println("Skipped to " + time);
