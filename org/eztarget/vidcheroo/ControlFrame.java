@@ -106,7 +106,7 @@ public class ControlFrame extends JFrame {
 	/**
 	 * All other buttons
 	 */
-	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, refreshMediaButton, vlcPathButton;
+	private JButton playButton, pauseButton, fullscreenButton, mediaPathButton, updateMediaButton, vlcPathButton;
 	
 	/**
 	 * Array of note length buttons in the tempo section
@@ -119,7 +119,6 @@ public class ControlFrame extends JFrame {
 	public ControlFrame() {
 		System.out.println("Initialising Control Frame.");
 		
-		//setBounds(FRAME_INITIAL_X, FRAME_INITIAL_Y, FRAME_WIDTH + 5, FRAME_HEIGHT + 20);
 		setLocation(FRAME_INITIAL_X, FRAME_INITIAL_Y);
 		//setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -295,16 +294,16 @@ public class ControlFrame extends JFrame {
 		contentPane.add(bottomPanel);
 		
 		// FIND MEDIA FILES Button:
-		mediaPathButton = new JButton("Select Media Path");
+		mediaPathButton = new JButton("Set Media Path");
 		mediaPathButton.addActionListener(openPathListener);
-		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH_S, ELEMENT_HEIGHT);
+		mediaPathButton.setBounds(MARGIN, MARGIN, ELEMENT_WIDTH - ELEMENT_HEIGHT - MARGIN, ELEMENT_HEIGHT);
 		bottomPanel.add(mediaPathButton);
 		
 		// REFRESH MEDIA Button:
-		refreshMediaButton = new JButton("Refresh Media List");
-		refreshMediaButton.addActionListener(refreshMediaListener);
-		refreshMediaButton.setBounds(ELEMENT_S_COL2_X, MARGIN, ELEMENT_WIDTH_S, ELEMENT_HEIGHT);
-		bottomPanel.add(refreshMediaButton);
+		updateMediaButton = new JButton("\u27f2");
+		updateMediaButton.addActionListener(refreshMediaListener);
+		updateMediaButton.setBounds(FRAME_WIDTH - MARGIN * 2 - ELEMENT_HEIGHT, MARGIN, ELEMENT_HEIGHT, ELEMENT_HEIGHT);
+		bottomPanel.add(updateMediaButton);
 		
 		final int fBottomRow2Y = MARGIN + ELEMENT_HEIGHT + MARGIN;
 		
@@ -414,6 +413,7 @@ public class ControlFrame extends JFrame {
 	 */
 	public void setPathControlEnabled(boolean enabled) {
 		mediaPathButton.setEnabled(enabled);
+		updateMediaButton.setEnabled(enabled);
 		vlcPathButton.setEnabled(enabled);
 	}
 	

@@ -309,6 +309,9 @@ public class Engine {
 				controlFrame.setPlayControlEnabled(false);
 				controlFrame.setPathControlEnabled(false);
 				controlFrame.setEnabled(false);
+				if (mediaFrame != null) {
+					mediaFrame.setVisible(false);
+				}
 				break;
 			default:
 				controlFrame.setStatusText("Status unknown.");
@@ -415,8 +418,7 @@ public class Engine {
 						
 						//DEBUG
 						System.out.println("  " + mediaLength + " startTime=" + startTime + " repeatTime=" + repeatTime);
-						
-						//TODO: Decide for sleep() or parkNanos().
+
 						final long fNanoInterval = SLEEP_INTERVAL * 1000000l;
 
 						// Sleep for one beat length.

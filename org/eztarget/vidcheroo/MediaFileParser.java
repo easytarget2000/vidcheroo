@@ -100,8 +100,11 @@ public class MediaFileParser {
 		if (mediaPath != null) {
 			System.out.println("Changing media path to " + mediaPath + ".");
 			MediaFileParser.mediaPath = mediaPath;
-		} else if (mediaPath.length() > 0){
-			System.out.println("Using media path: " + MediaFileParser.mediaPath);
+		} 
+		
+		if (MediaFileParser.mediaPath == null) {
+			System.err.println("ERROR: Media path has not been set.");
+			return;
 		}
 		
 		// The mediaPath parameter has to be set by now,
@@ -114,16 +117,16 @@ public class MediaFileParser {
 		
 		Engine.setStatus(Status.PARSING);
 		
-		final String fMediaPath = mediaPath;
+		//final String fMediaPath = MediaFileParser.mediaPath;
 		final boolean fIgnoreAnalysisFile = ignoreAnalysisFile;
 		
 		Thread parseThread = new Thread() {
 			
 			public void run() {
-				System.out.println("Looking for media files in " + fMediaPath);
+				System.out.println("Looking for media files in " + MediaFileParser.mediaPath);
 
-				if(fMediaPath.length() > 1) {
-					File fileDirectory = new File(fMediaPath);
+				if(MediaFileParser.mediaPath.length() > 1) {
+					File fileDirectory = new File(MediaFileParser.mediaPath);
 					
 					if (fileDirectory.length() > 0) {
 						boolean isAnalysed = false;
@@ -134,7 +137,7 @@ public class MediaFileParser {
 							for (final File fileEntry : fileDirectory.listFiles()) {
 								if (fileEntry.getName().equals(PROPERTY_FILE_NAME)) {
 									System.out.println(PROPERTY_FILE_NAME + " found.");
-									restoreAnalyzationProperties(fMediaPath);
+									restoreAnalyzationProperties(MediaFileParser.mediaPath);
 									isAnalysed = true;
 									break;
 								}
@@ -172,7 +175,7 @@ public class MediaFileParser {
 									
 									// Extension blacklist check was negative.
 									if (!isBlacklisted) {
-										String filePath = fMediaPath + "/" + fileName;
+										String filePath = MediaFileParser.mediaPath + "/" + fileName;
 										//TODO: Only load possible media files.
 										MediaFile file = new MediaFile();
 										file.path = filePath;
@@ -195,7 +198,7 @@ public class MediaFileParser {
 							parseFrame.dispose();
 							parseFrame = null;
 							
-							storeProperties(properties, fMediaPath);
+							storeProperties(properties, MediaFileParser.mediaPath);
 						}
 					}
 				}
