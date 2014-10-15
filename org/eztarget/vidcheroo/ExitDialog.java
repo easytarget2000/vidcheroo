@@ -24,12 +24,23 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/**
+ * Dialog that is displayed when the application is asked to be closed
+ * 
+ * @author michel@easy-target.org
+ *
+ */
 public class ExitDialog extends JDialog{
 	private static final long serialVersionUID = 933929761127142977L;
 	
 	private static final int WIDTH	= 600;
 	private static final int HEIGHT = 80; 
 
+	/**
+	 * Constructor method
+	 * 
+	 * @param frame Supplies context
+	 */
 	public ExitDialog(JFrame frame) {
 		super(frame, "", true);
 

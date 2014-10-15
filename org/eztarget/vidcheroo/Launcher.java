@@ -28,8 +28,16 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Launcher {
 	
+	/**
+	 * Java-relative path to the application icon
+	 */
 	public static final String ICON_PATH = "org/eztarget/vidcheroo/resources/icon.png";
 	
+	/**
+	 * MAIN METHOD
+	 * 
+	 * @param args Program arguments
+	 */
 	public static void main(String[] args) {
 		String osNameProperty = System.getProperty("os.name");
 		System.out.println("OS Name: " + osNameProperty);

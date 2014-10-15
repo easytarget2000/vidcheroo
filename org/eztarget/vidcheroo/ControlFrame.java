@@ -34,9 +34,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+/**
+ * Window frame displaying the controls
+ * 
+ * @author michel@easy-target.org
+ *
+ */
 public class ControlFrame extends JFrame {
 	
-	private static final long serialVersionUID = 201408251912L;
+	private static final long serialVersionUID = 20141015223489L;
 	
 	/**
 	 * Initial x-value of top-left coordinate
@@ -335,6 +341,9 @@ public class ControlFrame extends JFrame {
 	 * ACTION LISTENER
 	 */
 	
+	/**
+	 * Called by the note length buttons
+	 */
 	ActionListener noteLengthChanged = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			String actionCommand = e.getActionCommand();
@@ -356,6 +365,9 @@ public class ControlFrame extends JFrame {
 		}
 	};
 	
+	/**
+	 * Called by the Set VLC or Set Media Path buttons
+	 */
 	ActionListener openPathListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			
@@ -385,6 +397,9 @@ public class ControlFrame extends JFrame {
 		}
 	};
 	
+	/**
+	 * Called by the media refresh button
+	 */
 	ActionListener refreshMediaListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if (Engine.getStatus() == Status.PLAYING) return;
@@ -420,6 +435,11 @@ public class ControlFrame extends JFrame {
 		vlcPathButton.setEnabled(enabled);
 	}
 	
+	/**
+	 * Highlights one of the note length buttons and deselect all the other ones
+	 * 
+	 * @param lengthIndex Button index value that corresponds with values in NoteLength class
+	 */
 	public void setLengthButtonHighlighted(int lengthIndex) {
 		if (lengthButtons == null) {
 			System.err.println("ERROR: Note length buttons have not been initialised yet.");

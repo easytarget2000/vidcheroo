@@ -17,6 +17,7 @@ package org.eztarget.vidcheroo;
 
 /**
  * All files opened by the parser and player are of this class.
+ * 
  * @author michel@easy-target.org
  *
  */

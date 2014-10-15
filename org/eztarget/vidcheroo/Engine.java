@@ -159,8 +159,12 @@ public class Engine {
 			case 84:
 				setTempoMultiplier(4);
 				break;
+			case 89:
+				setTempoMultiplier(5);
+				break;
 			case 79:
 				System.err.println("---MANUAL MARKER---");
+				System.out.println();
 				break;
 			default:
 				break;
