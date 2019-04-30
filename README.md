@@ -1,4 +1,4 @@
-#Vidcheroo
+# Vidcheroo
 
 VJ tool: Rapid, beat-synched switcher for VLC-player
 A video is worth a thousand pictures: http://vimeo.com/easytarget/vidcheroo1
